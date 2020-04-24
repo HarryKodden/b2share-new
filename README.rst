@@ -17,7 +17,7 @@
 .. image:: https://img.shields.io/github/license/EUDAT-B2SHARE/b2share.svg
         :target: https://github.com/EUDAT-B2SHARE/b2share/blob/master/LICENSE
 
-${DESCRIPTION}
+EUDAT Collaborative Data Infrastructure.
 
 Further documentation is available on
 https://b2share.readthedocs.io/
