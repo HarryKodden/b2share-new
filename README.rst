@@ -8,17 +8,16 @@
  B2SHARE
 =========
 
-.. image:: https://img.shields.io/travis/EUDAT-B2SHARE/b2share.svg
-        :target: https://travis-ci.org/EUDAT-B2SHARE/b2share
+.. image:: https://img.shields.io/travis/HarryKodden/b2share-new.svg
+        :target: https://travis-ci.org/HarryKodden/b2share-new
 
-.. image:: https://img.shields.io/coveralls/EUDAT-B2SHARE/b2share.svg
-        :target: https://coveralls.io/r/EUDAT-B2SHARE/b2share
+.. image:: https://img.shields.io/coveralls/HarryKodden/b2share-new.svg
+        :target: https://coveralls.io/r/HarryKodden/b2share-new
 
-.. image:: https://img.shields.io/github/license/EUDAT-B2SHARE/b2share.svg
-        :target: https://github.com/EUDAT-B2SHARE/b2share/blob/master/LICENSE
+.. image:: https://img.shields.io/github/license/HarryKodden/b2share-new.svg
+        :target: https://github.com/HarryKodden/b2share-new/blob/master/LICENSE
 
 EUDAT Collaborative Data Infrastructure.
 
 Further documentation is available on
 https://b2share.readthedocs.io/
-

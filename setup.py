@@ -35,7 +35,7 @@ my_setup(
     license='MIT',
     author='EUDAT',
     author_email='info@eudat.eu',
-    url='https://github.com/EUDAT-B2SHARE/b2share',
+    url='https://github.com/HarryKodden/b2share-new',
     packages=packages,
     zip_safe=False,
     include_package_data=True,
