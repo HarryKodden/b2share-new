@@ -117,7 +117,7 @@ todo_include_todos = False
 html_theme = 'alabaster'
 
 html_theme_options = {
-    'description': '${DESCRIPTION}',
+    'description': 'EUDAT Collaborative Data Infrastructure.',
     'github_user': 'inveniosoftware',
     'github_repo': 'b2share',
     'github_button': False,
@@ -297,7 +297,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
     (master_doc, 'b2share', u'B2SHARE Documentation',
-     author, 'b2share', '${DESCRIPTION}',
+     author, 'b2share', 'EUDAT Collaborative Data Infrastructure.',
      'Miscellaneous'),
 ]
 

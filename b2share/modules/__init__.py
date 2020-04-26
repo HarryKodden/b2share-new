@@ -1,1 +1,1 @@
-"""B2SHARE Modules"""
+"""B2SHARE Modules."""

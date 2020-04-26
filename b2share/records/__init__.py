@@ -6,7 +6,7 @@
 # the terms of the MIT License; see LICENSE file for more details.
 
 
-"""${DESCRIPTION}"""
+"""EUDAT Collaborative Data Infrastructure."""
 
 from __future__ import absolute_import, print_function
 
