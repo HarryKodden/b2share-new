@@ -15,6 +15,8 @@ import sys
 
 import pkg_resources
 
+from flask import current_app
+
 from invenio_base.app import create_app_factory
 from invenio_base.wsgi import create_wsgi_factory, wsgi_proxyfix
 from invenio_base.signals import app_created, app_loaded
@@ -179,6 +181,7 @@ def add_routes(app_ui):
 
     app_ui.logger.info("Adding routes...")
 
+    return
     @app_ui.route('/')
     def root():
         return app_ui.send_static_file('index.html')
