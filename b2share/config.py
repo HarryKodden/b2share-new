@@ -66,7 +66,7 @@ I18N_LANGUAGES = [
 # Base templates
 # ==============
 #: Global base template.
-BASE_TEMPLATE = 'b2share/page.html'
+BASE_TEMPLATE = 'b2share_foo/base.html'
 #: Cover page base template (used for e.g. login/sign-up).
 COVER_TEMPLATE = 'invenio_theme/page_cover.html'
 #: Footer base template.
@@ -85,7 +85,7 @@ THEME_FRONTPAGE = True
 #: Frontpage title.
 THEME_FRONTPAGE_TITLE = _('B2SHARE')
 #: Frontpage template.
-THEME_FRONTPAGE_TEMPLATE = 'b2share/frontpage.html'
+THEME_FRONTPAGE_TEMPLATE = 'b2share_foo/page.html'
 
 # Email configuration
 # ===================
