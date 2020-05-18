@@ -1,30 +1,54 @@
-# -*- coding: utf-8 -*-
-#
-# Copyright (C) 2020 EUDAT.
-#
-# B2SHARE is free software; you can redistribute it and/or modify it under
-# the terms of the MIT License; see LICENSE file for more details.
-#
-# Dockerfile that builds a fully functional image of your app.
-#
-# Note: It is important to keep the commands in this file in sync with your
-# boostrap script located in ./scripts/bootstrap.
-#
-# In order to increase the build speed, we are extending this image from a base
-# image (built with Dockerfile.base) which only includes your Python
-# dependencies.
+FROM centos:7
+EXPOSE 5000
 
-ARG DEPENDENCIES_VERSION=latest
-FROM b2share-base:${DEPENDENCIES_VERSION}
+RUN rpm -iUvh http://dl.fedoraproject.org/pub/epel/7/x86_64/Packages/e/epel-release-7-12.noarch.rpm
 
-COPY ./ .
-COPY ./docker/uwsgi/ ${INVENIO_INSTANCE_PATH}
+RUN yum -y update
+RUN yum -y groupinstall "Development tools"
+RUN yum -y install wget gcc-c++ openssl-devel \
+                   postgresql-devel mysql-devel \
+                   git libffi-devel libxml2-devel libxml2 \
+                   libxslt-devel zlib1g-dev libxslt http-parser uwsgi
 
-RUN pip install . && \
-    invenio collect -v  && \
-    invenio webpack create && \
-    # --unsafe needed because we are running as root
-    invenio webpack install --unsafe && \
-    invenio webpack build
+# Install Node...
 
-ENTRYPOINT [ "bash", "-c"]
+RUN curl -sL https://rpm.nodesource.com/setup_12.x | bash -
+RUN yum clean all && yum makecache fast
+RUN yum install -y gcc-c++ make
+RUN yum install -y nodejs
+
+# Install Python...
+
+ENV PYTHON_VER=3.6
+ENV PYTHON_PRG=/usr/bin/python${PYTHON_VER}
+ENV PYTHON_ENV=/opt/.venv
+ENV PYTHON_LIB=${VIRTUAL_ENV}/lib/python${PYTHON_VER}
+
+RUN echo -e \
+    "\tPYTHON VERSION : $PYTHON_VER\n" \
+    "\tPYTHON PROGRAM : $PYTHON_PRG\n" \
+    "\tPYTHON VIRTUAL : $PYTHON_ENV\n" \
+    "\tPYTHON LIBRARY : $PYTHON_LIB\n"
+
+RUN yum -y install https://centos7.iuscommunity.org/ius-release.rpm
+RUN yum -y install python${PYTHON_VER//.} python${PYTHON_VER//.}-pip python${PYTHON_VER//.}-devel python${PYTHON_VER//.}-virtualenv
+
+RUN ${PYTHON_PRG} -m virtualenv --python=${PYTHON_PRG} ${PYTHON_ENV}
+ENV PATH="$PYTHON_ENV/bin:$PATH"
+
+# install locale
+RUN localedef -c -f UTF-8 -i en_US en_US.UTF-8
+ENV LC_ALL=en_US.utf-8
+ENV LANG=en_US.utf-8
+
+WORKDIR /opt/app
+
+ADD MANIFEST.in .
+ADD entry_points.txt .
+ADD README.rst .
+ADD setup.py .
+ADD setup.cfg .
+ADD b2share b2share
+
+RUN pip install --upgrade pip
+RUN pip install -e .[all,postgresql,elasticsearch7]

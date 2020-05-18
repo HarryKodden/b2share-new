@@ -13,6 +13,133 @@ from setuptools import find_packages, setup
 
 readme = open('README.rst').read()
 
+tests_require = [
+    'check-manifest>=0.35',
+    'coverage>=4.5.3',
+    'isort>=4.3',
+    'pydocstyle>=3.0.0',
+    'pytest-cov>=2.7.1',
+    'pytest-invenio>=1.3.1,<1.4.0',
+    'pytest-pep8>=1.0.6',
+    'pytest>=4.6.4,<5.0.0',
+]
+
+db_version = '>=1.0.5,<1.1.0'
+search_version = '>=1.3.1,<1.4.0'
+
+extras_require = {
+    # Bundles
+    'base': [
+        'invenio-admin>=1.2.1,<1.3.0',
+        'invenio-assets>=1.2.0,<1.3.0',
+        'invenio-formatter>=1.0.3,<1.1.0',
+        'invenio-logging>=1.3.0,<1.4.0',
+        'invenio-mail>=1.0.2,<1.1.0',
+        'invenio-rest>=1.2.1,<1.3.0',
+        'invenio-theme>=1.3.0a3,<1.4.0',
+    ],
+    'auth': [
+        'invenio-access>=1.4.1,<1.5.0',
+        'invenio-accounts>=1.4.0a2,<1.5.0',
+		'invenio-accounts-rest>=1.0.0a4',
+        'invenio-oauth2server>=1.2.0,<1.3.0',
+        'invenio-oauthclient>=1.2.1,<1.3.0',
+        'invenio-userprofiles>=1.1.1,<1.2.0',
+		'authlib>=0.14.2'
+    ],
+    'metadata': [
+        'invenio-indexer>=1.1.1,<1.2.0',
+        'invenio-jsonschemas>=1.1.0,<1.2.0',
+        'invenio-oaiserver>=1.2.0,<1.3.0',
+        'invenio-pidstore>=1.2.0,<1.3.0',
+        'invenio-records-rest>=1.7.1,<1.8.0',
+        'invenio-records-ui>=1.1.0,<1.2.0',
+        'invenio-records>=1.3.1,<1.4.0',
+        'invenio-search-ui>=2.0.0a2,<2.1.0',
+		'invenio_pidrelations>=-1.0.0a6',
+		'invenio-marc21>=1.0.0a9',
+		'jsonresolver>=0.3.1',
+		'datacite>=1.0.1',
+		'dcxml>=0.1.2',
+		'doschema>=1.0.0a1',
+    ],
+    'files': [
+        'invenio-files-rest>=1.2.0,<1.3.0',
+        'invenio-iiif>=1.1.0,<1.2.0',
+        'invenio-previewer>=1.2.1,<1.3.0',
+        'invenio-records-files>=1.2.1,<1.3.0',
+		'invenio_deposit>=1.0.0a11',
+    ],
+	'search': [
+		'elasticsearch>=-7.6.0',
+		'elasticsearch-dsl>=7.1.0',
+	],
+    # Database version
+    'postgresql': [
+        'invenio-db[postgresql,versioning]{}'.format(db_version),
+    ],
+    'mysql': [
+        'invenio-db[mysql,versioning]{}'.format(db_version),
+    ],
+    'sqlite': [
+        'invenio-db[versioning]{}'.format(db_version),
+    ],
+    # Elasticsearch version
+    'elasticsearch5': [
+        'invenio-search[elasticsearch5]{}'.format(search_version),
+    ],
+    'elasticsearch6': [
+        'invenio-search[elasticsearch6]{}'.format(search_version),
+    ],
+    'elasticsearch7': [
+        'invenio-search[elasticsearch7]{}'.format(search_version),
+    ],
+    # Docs and test dependencies
+    'docs': [
+        'Sphinx>=1.5.1',
+    ],
+	'flask': [
+		'Flask>=1.1.2',     
+		'Flask-BabelEx>=0.9.4',     
+		'Flask-Caching>=1.8.0',     
+		'Flask-CeleryExt>=0.3.4',     
+		'Flask-Limiter>=1.1.0,<1.2.0',     
+		'Flask-Login<0.5.0',     
+		'Flask-Principal>=0.4.0',     
+	],
+	'uwsgi': [
+		'Werkzeug>=1.0.1',
+	],
+	'db': [
+		'sqlalchemy<1.3.6',
+	],
+	'webdav': [
+		'easywebdav2>=-1.3.0',
+	],
+    'tests': tests_require,
+}
+
+extras_require['all'] = []
+for name, reqs in extras_require.items():
+    if name in ('sqlite', 'mysql', 'postgresql') \
+            or name.startswith('elasticsearch'):
+        continue
+    extras_require['all'].extend(reqs)
+
+
+setup_requires = [
+    'pytest-runner>=3.0.0,<5',
+]
+
+install_requires = [
+    'invenio-app>=1.3.0,<1.4.0',
+    'invenio-base>=1.2.3,<1.3.0',
+    'invenio-cache>=1.1.0,<1.2.0',
+    'invenio-celery>=1.2.0,<1.3.0',
+    'invenio-config>=1.0.3,<1.1.0',
+    'invenio-i18n>=1.2.0,<1.3.0',
+]
+
 packages = find_packages()
 
 # Get the version string. Cannot be done with import!
@@ -69,4 +196,8 @@ my_setup(
 		'Programming Language :: Python :: 3.6',
 		'Development Status :: 3 - Alpha',
 	],
+	extras_require=extras_require,
+    install_requires=install_requires,
+    setup_requires=setup_requires,
+    tests_require=tests_require,
 )

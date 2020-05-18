@@ -52,15 +52,22 @@ services:
     links:
       - web-ui
       - web-api
-  # UI Application
+  # Application Frontend
   web-ui:
+    extends:
+      file: docker-services.yml
+      service: gui
+    ports:
+      - "5000"
+    # Application Backend
+  backend:
     extends:
       file: docker-services.yml
       service: app
     command: ["tail -f /dev/null"]
     image: b2share
     ports:
-      - "5000"
+      - "5001"
     volumes:
       - static_data:/opt/invenio/var/instance/static
       - uploaded_data:/opt/invenio/var/instance/data

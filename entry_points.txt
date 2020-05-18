@@ -28,6 +28,9 @@ invenio_pidrelations = invenio_pidrelations:InvenioPIDRelations
 [invenio_base.blueprints]
 b2share_foo = b2share.modules.b2share_foo.views:blueprint
 b2share_communities = b2share.modules.communities.views:blueprint
+b2share_users = b2share.modules.users.views:blueprint
+b2share_deposit = b2share.modules.deposit.views:blueprint
+b2share_records = b2share.modules.records.views:blueprint
 
 [nvenio_db.models]
 b2share_communities = b2share.modules.communities.models

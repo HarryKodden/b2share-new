@@ -7,12 +7,15 @@
 
 version: '2.3'
 services:
+
+  gui:
+    build: gui
+    image: b2share_frontend
+
   app:
     build:
       context: ./
-      args:
-        - ENVIRONMENT=DEV
-    image: b2share
+    image: b2share_backend
     environment:
       - "INVENIO_ACCOUNTS_SESSION_REDIS_URL=redis://cache:6379/1"
       - "INVENIO_BROKER_URL=amqp://guest:guest@mq:5672/"
