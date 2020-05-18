@@ -45,7 +45,6 @@ extras_require = {
         'invenio-oauth2server>=1.2.0,<1.3.0',
         'invenio-oauthclient>=1.2.1,<1.3.0',
         'invenio-userprofiles>=1.1.1,<1.2.0',
-		'authlib>=0.14.2'
     ],
     'metadata': [
         'invenio-indexer>=1.1.1,<1.2.0',
@@ -58,7 +57,7 @@ extras_require = {
         'invenio-search-ui>=2.0.0a2,<2.1.0',
 		'invenio_pidrelations>=-1.0.0a6',
 		'invenio-marc21>=1.0.0a9',
-		'jsonresolver>=0.3.1',
+		'jsonresolver==0.2.1',
 		'datacite>=1.0.1',
 		'dcxml>=0.1.2',
 		'doschema>=1.0.0a1',
@@ -115,6 +114,12 @@ extras_require = {
 	],
 	'webdav': [
 		'easywebdav2>=-1.3.0',
+	],
+	'b2handle': [
+		'b2handle>=1.1.2',
+	],
+	'httplib': [
+		'httplib2>=0.17.3'
 	],
     'tests': tests_require,
 }
