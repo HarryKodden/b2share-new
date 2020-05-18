@@ -1,5 +1,4 @@
 FROM centos:7
-EXPOSE 5000
 
 RUN rpm -iUvh http://dl.fedoraproject.org/pub/epel/7/x86_64/Packages/e/epel-release-7-12.noarch.rpm
 
@@ -52,3 +51,7 @@ ADD b2share b2share
 
 RUN pip install --upgrade pip
 RUN pip install -e .[all,postgresql,elasticsearch7]
+
+EXPOSE 5000
+
+CMD ["b2share", "run"]
