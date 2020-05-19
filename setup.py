@@ -107,7 +107,7 @@ extras_require = {
 		'Flask-Principal>=0.4.0',     
 	],
 	'uwsgi': [
-		'Werkzeug>=1.0.1',
+		'Werkzeug==0.16.1',
 	],
 	'db': [
 		'sqlalchemy<1.3.6',

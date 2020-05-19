@@ -57,21 +57,29 @@ services:
     extends:
       file: docker-services.yml
       service: gui
-    ports:
-      - "5000"
-    # Application Backend
+    image: b2share_gui
+    links:
+      - backend
+  # Application Backend
   backend:
     extends:
       file: docker-services.yml
       service: app
-    command: ["tail -f /dev/null"]
-    image: b2share
-    ports:
-      - "5001"
+    image: b2share_app
     volumes:
       - static_data:/opt/invenio/var/instance/static
       - uploaded_data:/opt/invenio/var/instance/data
       - archived_data:/opt/invenio/var/instance/archive
+#   command: uwsgi --ini /opt/app/b2share/uwsgi.ini
+    command: 
+      - /bin/sh
+      - -c
+      - |
+        b2share db init
+        b2share alembic upgrade
+        b2share index init
+        b2share collect -v
+        b2share run -h 0.0.0.0
     links:
       - cache
       - es
@@ -82,13 +90,12 @@ services:
     extends:
       file: docker-services.yml
       service: app
-    command: ["uwsgi /opt/invenio/var/instance/uwsgi_rest.ini"]
-    image: b2share
-    ports:
-      - "5000"
+    image: b2share_app
     volumes:
       - uploaded_data:/opt/invenio/var/instance/data
       - archived_data:/opt/invenio/var/instance/archive
+#   command: uwsgi --ini /opt/app/b2share/uwsgi.ini
+    command: b2share run -h 0.0.0.0
     links:
       - cache
       - es
@@ -99,9 +106,9 @@ services:
     extends:
       file: docker-services.yml
       service: app
+    image: b2share_app
     restart: "always"
-    command: ["celery worker -A invenio_app.celery --loglevel=INFO"]
-    image: b2share
+    command: celery worker -A invenio_app.celery --loglevel=INFO
     links:
       - cache
       - es

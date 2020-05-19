@@ -10,12 +10,12 @@ services:
 
   gui:
     build: gui
-    image: b2share_frontend
+    image: b2share_gui
 
   app:
     build:
       context: ./
-    image: b2share_backend
+    image: b2share_app
     environment:
       - "INVENIO_ACCOUNTS_SESSION_REDIS_URL=redis://cache:6379/1"
       - "INVENIO_BROKER_URL=amqp://guest:guest@mq:5672/"
@@ -23,26 +23,30 @@ services:
       - "INVENIO_CACHE_TYPE=redis"
       - "INVENIO_CELERY_BROKER_URL=amqp://guest:guest@mq:5672/"
       - "INVENIO_CELERY_RESULT_BACKEND=redis://cache:6379/2"
-      - "INVENIO_SEARCH_ELASTIC_HOSTS=['es:9200']"
+      - "ELASTIC_HOSTS=es:9200"
       - "INVENIO_SECRET_KEY=CHANGE_ME"
       - "INVENIO_SQLALCHEMY_DATABASE_URI=postgresql+psycopg2://b2share:b2share@db/b2share"
       - "INVENIO_WSGI_PROXIES=2"
       - "INVENIO_RATELIMIT_STORAGE_URL=redis://cache:6379/3"
+      - "USE_STAGING_B2ACCESS=1"
+      - "FLASK_DEBUG=1"
+      - "B2ACCESS_CONSUMER_KEY=${MY_B2ACCESS_CONSUMER_KEY}
+      - "B2ACCESS_SECRET_KEY=${MY_B2ACCESS_SECRET_KEY}"
   lb:
     build: ./docker/haproxy/
-    image: b2share-lb
+#   image: b2share-lb
     restart: "always"
     ports:
       - "80:80"
-      - "443:443"
+#     - "443:443"
       - "8080:8080"
   frontend:
     build: ./docker/nginx/
-    image: b2share-frontend
+#   image: b2share-frontend
     restart: "always"
     ports:
       - "80"
-      - "443"
+#     - "443"
   cache:
     image: redis
     restart: "always"

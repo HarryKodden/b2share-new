@@ -41,6 +41,18 @@ from b2share.modules.users.loaders import (
     account_json_loader, account_json_patch_loader,
 )
 
+from invenio_search.config import SEARCH_ELASTIC_HOSTS
+
+SEARCH_ELASTIC_HOSTS = []
+
+for elastic_host in os.environ.get("ELASTIC_HOSTS", "localhost:9200").split(','):
+    try:
+        (host, port) = elastic_host.split(':')
+    except:
+        host = elastic_host
+        port = 9200
+
+    SEARCH_ELASTIC_HOSTS.append(dict(host=host, port=port, use_ssl=False, ssl_show_warn=False))
 
 def _(x):
     """Identity function used to trigger string extraction."""
@@ -50,7 +62,7 @@ def _(x):
 # Rate limiting
 # =============
 #: Storage for ratelimiter.
-RATELIMIT_STORAGE_URL = 'redis://localhost:6379/3'
+RATELIMIT_STORAGE_URL = os.environ.get("INVENIO_RATELIMIT_STORAGE_URL", 'redis://localhost:6379/3')
 
 # I18N
 # ====
@@ -107,38 +119,18 @@ SECURITY_EMAIL_SENDER = SUPPORT_EMAIL
 SECURITY_EMAIL_SUBJECT_REGISTER = _(
     "Welcome to B2SHARE!")
 #: Redis session storage URL.
-ACCOUNTS_SESSION_REDIS_URL = 'redis://localhost:6379/1'
+ACCOUNTS_SESSION_REDIS_URL = os.environ.get("INVENIO_ACCOUNTS_SESSION_REDIS_URL", 'redis://localhost:6379/1')
 #: Enable session/user id request tracing. This feature will add X-Session-ID
 #: and X-User-ID headers to HTTP response. You MUST ensure that NGINX (or other
 #: proxies) removes these headers again before sending the response to the
 #: client. Set to False, in case of doubt.
 ACCOUNTS_USERINFO_HEADERS = True
 
-# Celery configuration
-# ====================
-
-BROKER_URL = 'amqp://guest:guest@localhost:5672/'
-#: URL of message broker for Celery (default is RabbitMQ).
-CELERY_BROKER_URL = 'amqp://guest:guest@localhost:5672/'
-#: URL of backend for result storage (default is Redis).
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/2'
-#: Scheduled tasks configuration (aka cronjobs).
-CELERY_BEAT_SCHEDULE = {
-    'indexer': {
-        'task': 'invenio_indexer.tasks.process_bulk_queue',
-        'schedule': timedelta(minutes=5),
-    },
-    'accounts': {
-        'task': 'invenio_accounts.tasks.clean_session_table',
-        'schedule': timedelta(minutes=60),
-    },
-}
-
 # Database
 # ========
 #: Database URI including user and password
-SQLALCHEMY_DATABASE_URI = \
-    'postgresql+psycopg2://b2share:b2share@localhost/b2share'
+SQLALCHEMY_DATABASE_URI = os.environ.get("INVENIO_SQLALCHEMY_DATABASE_URI", \
+    'postgresql+psycopg2://b2share:b2share@localhost/b2share')
 
 # JSONSchemas
 # ===========
@@ -387,7 +379,6 @@ B2ACCESS_APP_CREDENTIALS = dict(
     consumer_secret=os.environ.get("B2ACCESS_SECRET_KEY", '*** SECRET KEY ***'),
 )
 
-
 B2ACCESS_BASE_URL = 'https://b2access.eudat.eu/'
 if os.environ.get("USE_STAGING_B2ACCESS"):
     B2ACCESS_BASE_URL = 'https://unity.eudat-aai.fz-juelich.de/'
@@ -462,9 +453,9 @@ CACHE_TYPE='redis'
 # Celery
 # ======
 #: Default broker (RabbitMQ on locahost).
-BROKER_URL = "amqp://guest:guest@localhost:5672//"
+BROKER_URL = os.environ.get("INVENIO_CELERY_BROKER_URL", "amqp://guest:guest@localhost:5672//")
 #: Default Celery result backend.
-CELERY_RESULT_BACKEND = "redis://localhost:6379/1"
+CELERY_RESULT_BACKEND = os.environ.get("INVENIO_ACCOUNTS_SESSION_REDIS_URL", "redis://localhost:6379/1")
 #: Accepted content types for Celery.
 CELERY_ACCEPT_CONTENT = ['json', 'msgpack', 'yaml']
 #: Beat schedule
@@ -646,3 +637,4 @@ SECURITY_SEND_REGISTER_EMAIL=False
 #: There is no password so don't send password change emails
 SECURITY_SEND_PASSWORD_CHANGE_EMAIL=False
 SECURITY_SEND_PASSWORD_RESET_NOTICE_EMAIL=False
+
