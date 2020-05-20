@@ -8,10 +8,6 @@
 version: '2.3'
 services:
 
-  gui:
-    build: gui
-    image: b2share_gui
-
   app:
     build:
       context: ./
@@ -30,7 +26,7 @@ services:
       - "INVENIO_RATELIMIT_STORAGE_URL=redis://cache:6379/3"
       - "USE_STAGING_B2ACCESS=1"
       - "FLASK_DEBUG=1"
-      - "B2ACCESS_CONSUMER_KEY=${MY_B2ACCESS_CONSUMER_KEY}
+      - "B2ACCESS_CONSUMER_KEY=${MY_B2ACCESS_CONSUMER_KEY}"
       - "B2ACCESS_SECRET_KEY=${MY_B2ACCESS_SECRET_KEY}"
   lb:
     build: ./docker/haproxy/

@@ -20,7 +20,7 @@ html {
 }
 #body {
     padding-bottom: 170px;   /* Height of the footer + 50px*/
-    background: white url('/img/bg-page.jpg') no-repeat center 200px;
+    background: white url('/static/img/bg-page.jpg') no-repeat center 200px;
 }
 #footer {
     position: absolute;
@@ -56,7 +56,7 @@ html {
 
 .page-wrap .header {
     font-family: 'Ubuntu', sans-serif;
-    background: url("/img/pattern.svg") no-repeat;
+    background: url("/static/img/pattern.svg") no-repeat;
     margin: 0;
     background-position: 100% 0;
     box-shadow: -7px 4px 18px -2px rgba(0, 0, 0, 0.1);
@@ -425,7 +425,7 @@ input:focus, select:focus, textarea:focus, button:focus, a:focus {
 
 .navbar-default {
   margin-bottom: 0;
-  background: white url('/img/pattern.svg') no-repeat right top;
+  background: white url('/statc/img/pattern.svg') no-repeat right top;
   background-size: contain;
 }
 

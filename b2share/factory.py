@@ -179,9 +179,10 @@ REST API is mounted under ``/api``.
 
 def add_routes(app_ui):
 
+    return
+    
     app_ui.logger.info("Adding routes...")
 
-    return
     @app_ui.route('/')
     def root():
         return app_ui.send_static_file('index.html')
@@ -190,31 +191,31 @@ def add_routes(app_ui):
     @app_ui.route('/help/', defaults={'path': ''})
     @app_ui.route('/help/<path:path>')
     def serve_help(path):
-        return app_ui.send_static_file('index.html')
+        return app_ui.send_static_file('/static/index.html')
 
     @app_ui.route('/communities', defaults={'path': ''})
     @app_ui.route('/communities/', defaults={'path': ''})
     @app_ui.route('/communities/<path:path>')
     def serve_communities(path):
-        return app_ui.send_static_file('index.html')
+        return app_ui.send_static_file('/static/index.html')
 
     @app_ui.route('/user', defaults={'path': ''})
     @app_ui.route('/user/', defaults={'path': ''})
     @app_ui.route('/user/<path:path>')
     def serve_user(path):
-        return app_ui.send_static_file('index.html')
+        return app_ui.send_static_file('/static/index.html')
 
     @app_ui.route('/records', defaults={'path': ''})
     @app_ui.route('/records/', defaults={'path': ''})
     @app_ui.route('/records/<path:path>')
     def serve_records(path):
-        return app_ui.send_static_file('index.html')
+        return app_ui.send_static_file('/static/index.html')
 
     @app_ui.route('/search', defaults={'path': ''})
     @app_ui.route('/search/', defaults={'path': ''})
     @app_ui.route('/search/<path:path>')
     def serve_search(path):
-        return app_ui.send_static_file('index.html')
+        return app_ui.send_static_file('/static/index.html')
 
 
 def check_configuration(config, logger):

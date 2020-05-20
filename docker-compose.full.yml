@@ -48,38 +48,36 @@ services:
       file: docker-services.yml
       service: frontend
     volumes:
-      - static_data:/opt/invenio/var/instance/static:ro
+      - static_data:/opt/static:ro
     links:
       - web-ui
       - web-api
-  # Application Frontend
+  # Application UI Application
   web-ui:
-    extends:
-      file: docker-services.yml
-      service: gui
-    image: b2share_gui
-    links:
-      - backend
-  # Application Backend
-  backend:
     extends:
       file: docker-services.yml
       service: app
     image: b2share_app
     volumes:
-      - static_data:/opt/invenio/var/instance/static
-      - uploaded_data:/opt/invenio/var/instance/data
-      - archived_data:/opt/invenio/var/instance/archive
-#   command: uwsgi --ini /opt/app/b2share/uwsgi.ini
+      - static_data:/opt/var/static
+      - uploaded_data:/opt/var/data
+      - archived_data:/opt/var/archive
     command: 
       - /bin/sh
       - -c
       - |
+        # Initialize db and index...
         b2share db init
-        b2share alembic upgrade
         b2share index init
+        b2share alembic upgrade
+        # Initialize file location
+        b2share files location --default 'default-location' /opt/var/data
         b2share collect -v
-        b2share run -h 0.0.0.0
+        # Create admin role to restrict access
+        b2share roles create admin
+        b2share access allow superuser-access role admin
+        # Start server...
+        uwsgi --ini /opt/app/b2share/wsgi.ini
     links:
       - cache
       - es
@@ -92,10 +90,9 @@ services:
       service: app
     image: b2share_app
     volumes:
-      - uploaded_data:/opt/invenio/var/instance/data
-      - archived_data:/opt/invenio/var/instance/archive
-#   command: uwsgi --ini /opt/app/b2share/uwsgi.ini
-    command: b2share run -h 0.0.0.0
+      - uploaded_data:/opt/var/data
+      - archived_data:/opt/var/archive
+    command: uwsgi --ini /opt/app/b2share/wsgi.ini
     links:
       - cache
       - es
@@ -115,8 +112,8 @@ services:
       - mq
       - db
     volumes:
-      - uploaded_data:/opt/invenio/var/instance/data
-      - archived_data:/opt/invenio/var/instance/archive
+      - uploaded_data:/opt/var/data
+      - archived_data:/opt/var/archive
   # Monitoring of Celery
   # http://127.0.0.1:5555
   flower:

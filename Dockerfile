@@ -1,3 +1,31 @@
+FROM node:latest as build-deps
+
+MAINTAINER harry.kodden@surfsara.nl
+
+WORKDIR /tmp
+
+RUN git clone https://github.com/EUDAT-B2SHARE/public-license-selector.git
+WORKDIR /tmp/public-license-selector
+RUN npm install --unsafe-perm
+RUN npm audit fix
+RUN npm run build
+
+WORKDIR /opt
+
+ADD webui/src src
+ADD webui/package.json .
+ADD webui/webpack.config.js .
+
+RUN echo "echo 'Files copied !'" > ./copy_files.sh && chmod a+x ./copy_files.sh
+
+RUN mv webpack.config.js webpack.config.js.0
+RUN echo "require('es6-promise').polyfill();" > webpack.config.js
+RUN cat webpack.config.js.0 >> webpack.config.js
+RUN npm install es6-promise
+RUN npm install --unsafe-perm
+
+RUN node_modules/webpack/bin/webpack.js -p
+
 FROM centos:7
 
 RUN rpm -iUvh http://dl.fedoraproject.org/pub/epel/7/x86_64/Packages/e/epel-release-7-12.noarch.rpm
@@ -8,13 +36,6 @@ RUN yum -y install wget gcc-c++ openssl-devel \
                    postgresql-devel mysql-devel \
                    git libffi-devel libxml2-devel libxml2 \
                    libxslt-devel zlib1g-dev libxslt http-parser uwsgi
-
-# Install Node...
-
-RUN curl -sL https://rpm.nodesource.com/setup_12.x | bash -
-RUN yum clean all && yum makecache fast
-RUN yum install -y gcc-c++ make
-RUN yum install -y nodejs
 
 # Install Python...
 
@@ -29,8 +50,8 @@ RUN echo -e \
     "\tPYTHON VIRTUAL : $PYTHON_ENV\n" \
     "\tPYTHON LIBRARY : $PYTHON_LIB\n"
 
-RUN yum -y install https://centos7.iuscommunity.org/ius-release.rpm
 RUN yum -y install python${PYTHON_VER//.} python${PYTHON_VER//.}-pip python${PYTHON_VER//.}-devel python${PYTHON_VER//.}-virtualenv
+RUN yum -y install uwsgi-plugin-python${PYTHON_VER//.}
 
 RUN ${PYTHON_PRG} -m virtualenv --python=${PYTHON_PRG} ${PYTHON_ENV}
 ENV PATH="$PYTHON_ENV/bin:$PATH"
@@ -39,6 +60,10 @@ ENV PATH="$PYTHON_ENV/bin:$PATH"
 RUN localedef -c -f UTF-8 -i en_US en_US.UTF-8
 ENV LC_ALL=en_US.utf-8
 ENV LANG=en_US.utf-8
+
+# Prepare application backend...
+
+ENV B2SHARE_INSTANCE_PATH=/opt/var
 
 WORKDIR /opt/app
 
@@ -49,9 +74,30 @@ ADD setup.py .
 ADD setup.cfg .
 ADD b2share b2share
 
+# Prepare application frontend...
+
+COPY webui/app b2share/modules/b2share_foo/static
+
+RUN mv b2share/modules/b2share_foo/static/index.html b2share/modules/b2share_foo/templates/b2share_foo/page.html
+
+# Add generated files into lib sub directories...
+COPY --from=build-deps /opt/app/b2share-bundle.* b2share/modules/b2share_foo/static/
+COPY --from=build-deps /opt/node_modules/bootstrap/dist/css/bootstrap.min.* b2share/modules/b2share_foo/static/lib/css/
+COPY --from=build-deps /opt/node_modules/bootstrap-grid/dist/grid.min.css b2share/modules/b2share_foo/static/lib/css/bootstrap-grid.min.css
+COPY --from=build-deps /opt/node_modules/react-widgets/dist/css/* b2share/modules/b2share_foo/static/lib/css/
+COPY --from=build-deps /opt/node_modules/font-awesome/css/* b2share/modules/b2share_foo/static/lib/css/
+COPY --from=build-deps /opt/node_modules/react-toggle/style.css b2share/modules/b2share_foo/static/lib/css/toggle-style.css
+COPY --from=build-deps /opt/node_modules/bootstrap/dist/fonts/* b2share/modules/b2share_foo/static/lib/fonts/
+COPY --from=build-deps /opt/node_modules/react-widgets/dist/fonts/* b2share/modules/b2share_foo/static/lib/fonts/
+COPY --from=build-deps /opt/node_modules/font-awesome/* b2share/modules/b2share_foo/static/lib/fonts/
+COPY --from=build-deps /opt/node_modules/react-widgets/dist/img/* b2share/modules/b2share_foo/static/lib/img/
+
+# Add License Selector
+COPY --from=build-deps /tmp/public-license-selector/dist/license-selector.* b2share/modules/b2share_foo/static/vendors/
+
 RUN pip install --upgrade pip
 RUN pip install -e .[all,postgresql,elasticsearch7]
 
 EXPOSE 5000
 
-CMD ["b2share", "run"]
+CMD ["b2share"]
