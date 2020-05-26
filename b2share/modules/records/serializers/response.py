@@ -66,23 +66,23 @@ def record_responsify(serializer, mimetype):
 
 
 class JSONSerializer(InvenioJSONSerializer):
-    def preprocess_record(self, pid, record, links_factory=None):
+    def preprocess_record(self, pid, record, links_factory=None, **kwargs):
         g.record = record
         return super(JSONSerializer, self).preprocess_record(
-            pid, record, links_factory)
+            pid, record, links_factory, **kwargs)
 
-    def serialize(self, pid, record, links_factory=None):
+    def serialize(self, pid, record, links_factory=None, **kwargs):
         """B2ShareRecord serializer."""
         return super(JSONSerializer, self).\
-            serialize(pid, record, links_factory)
+            serialize(pid, record, links_factory, **kwargs)
 
-    def transform_search_hit(self, pid, record_hit, links_factory=None):
+    def transform_search_hit(self, pid, record_hit, links_factory=None, **kwargs):
         g.record_hit = record_hit
         return super(JSONSerializer, self).transform_search_hit(
-            pid, record_hit, links_factory)
+            pid, record_hit, links_factory, **kwargs)
 
     def serialize_search(self, pid_fetcher, search_result, links=None,
-                         item_links_factory=None):
+                         item_links_factory=None, **kwargs):
             """Serialize a search result.
             :param pid_fetcher: Persistent identifier fetcher. It is overriden
                                 if the request searches for draft records.
@@ -92,4 +92,4 @@ class JSONSerializer(InvenioJSONSerializer):
                 item_links_factory = deposit_links_factory
             return super(JSONSerializer, self).serialize_search(
                 pid_fetcher=pid_fetcher, search_result=search_result,
-                links=links, item_links_factory=item_links_factory)
+                links=links, item_links_factory=item_links_factory, **kwargs)

@@ -98,13 +98,13 @@ extras_require = {
         'Sphinx>=1.5.1',
     ],
 	'flask': [
-		'Flask>=1.1.2',     
-		'Flask-BabelEx>=0.9.4',     
-		'Flask-Caching>=1.8.0',     
-		'Flask-CeleryExt>=0.3.4',     
-		'Flask-Limiter>=1.1.0,<1.2.0',     
-		'Flask-Login<0.5.0',     
-		'Flask-Principal>=0.4.0',     
+		'Flask>=1.1.2',
+		'Flask-BabelEx>=0.9.4',
+		'Flask-Caching>=1.8.0',
+		'Flask-CeleryExt>=0.3.4',
+		'Flask-Limiter>=1.1.0,<1.2.0',
+		'Flask-Login<0.5.0',
+		'Flask-Principal>=0.4.0',
 	],
 	'uwsgi': [
 		'Werkzeug==0.16.1',
@@ -121,6 +121,9 @@ extras_require = {
 	'httplib': [
 		'httplib2>=0.17.3'
 	],
+    'code-quality': [
+        "coverage==5.1",
+    ],
     'tests': tests_require,
 }
 
@@ -173,7 +176,7 @@ def my_setup(**kwargs):
 					kwargs['entry_points'][entry_point].append(line)
 
 	setup(**kwargs)
-		
+
 my_setup(
 	name='b2share',
 	version=version,

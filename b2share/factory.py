@@ -180,12 +180,12 @@ REST API is mounted under ``/api``.
 def add_routes(app_ui):
 
     return
-    
+
     app_ui.logger.info("Adding routes...")
 
-    @app_ui.route('/')
-    def root():
-        return app_ui.send_static_file('index.html')
+#   @app_ui.route('/')
+#   def root():
+#       return app_ui.send_static_file('/static/index.html')
 
     @app_ui.route('/help', defaults={'path': ''})
     @app_ui.route('/help/', defaults={'path': ''})

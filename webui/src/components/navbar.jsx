@@ -28,7 +28,7 @@ export const Navbar = React.createClass({
                             <span className="icon-bar"></span>
                         </button>
                         <Link to="/" className="navbar-brand">
-                            <img style={{height: 90}} src="/img/logo.png"/>
+                            <img style={{height: 90}} src="/static/img/logo.png"/>
                         </Link>
                     </div>
 

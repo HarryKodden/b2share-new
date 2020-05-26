@@ -38,7 +38,6 @@ from invenio_files_rest.models import Bucket, ObjectVersion, FileInstance
 
 from .fetchers import b2share_record_uuid_fetcher
 
-
 class B2ShareFileObject(FileObject):
     """Wrapper for B2Share files."""
 

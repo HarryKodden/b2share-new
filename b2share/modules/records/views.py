@@ -89,7 +89,6 @@ blueprint = Blueprint(
     url_prefix='',
 )
 
-
 def create_blueprint(endpoints):
 
     for endpoint, options in (endpoints or {}).items():

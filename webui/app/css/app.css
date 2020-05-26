@@ -425,7 +425,7 @@ input:focus, select:focus, textarea:focus, button:focus, a:focus {
 
 .navbar-default {
   margin-bottom: 0;
-  background: white url('/statc/img/pattern.svg') no-repeat right top;
+  background: white url('/static/img/pattern.svg') no-repeat right top;
   background-size: contain;
 }
 

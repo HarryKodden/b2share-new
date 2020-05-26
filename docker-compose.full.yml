@@ -62,7 +62,7 @@ services:
       - static_data:/opt/var/static
       - uploaded_data:/opt/var/data
       - archived_data:/opt/var/archive
-    command: 
+    command:
       - /bin/sh
       - -c
       - |
