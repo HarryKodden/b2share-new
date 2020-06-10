@@ -70,7 +70,7 @@ class B2ShareRecord(Record):
         return PersistentIdentifier.get(pid.pid_type,
                                         pid.pid_value)
 
-    def delete(self):
+    def delete(self, **kwargs):
         """Delete a record."""
         from b2share.modules.deposit.api import Deposit
         from b2share.modules.deposit.providers import DepositUUIDProvider
@@ -111,7 +111,7 @@ class B2ShareRecord(Record):
         # via the trigger on record deletion.
         super(B2ShareRecord, self).delete()
 
-        version_master = PIDNodeVersioning(child=pid)
+        version_master = PIDNodeVersioning(pid=pid)
         # If the parent has no other children and no draft child
         # mark it as deleted
         if not version_master.children.all():

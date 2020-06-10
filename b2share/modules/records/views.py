@@ -37,6 +37,7 @@ from flask_mail import Message
 from jsonschema.exceptions import ValidationError
 
 from invenio_db import db
+from invenio_pidstore import current_pidstore
 from invenio_pidstore.resolver import Resolver
 from invenio_pidstore.errors import PIDDoesNotExistError, PIDRedirectedError
 from invenio_pidstore.models import PersistentIdentifier
@@ -61,6 +62,7 @@ from invenio_accounts.models import User
 
 from .providers import RecordUUIDProvider
 from .permissions import DeleteRecordPermission
+from .proxies import current_records_rest
 
 
 # duplicated from invenio-records-rest because we need
@@ -90,9 +92,12 @@ blueprint = Blueprint(
 )
 
 def create_blueprint(endpoints):
-
     for endpoint, options in (endpoints or {}).items():
+        print("Endpoint: {}".format(endpoint))
+        print("- options: {}".format(options))
+
         for rule in create_url_rules(endpoint, **options):
+            print("- rule: {}".format(rule))
             blueprint.add_url_rule(**rule)
 
     # catch record validation errors
@@ -289,9 +294,145 @@ def create_url_rules(endpoint, list_route=None, item_route=None,
         ] + views
     return views
 
+class MyContentNegotiatedMethodView(ContentNegotiatedMethodView):
+    """MethodView with content negotiation.
 
-class B2ShareRecordsListResource(RecordsListResource):
-    """B2Share resource for records listing and deposit creation."""
+    Dispatch HTTP requests as MethodView does and build responses using the
+    registered serializers. It chooses the right serializer using the request's
+    accept type. It also provides a helper method for handling ETags.
+    """
+
+    def __init__(self, serializers=None, method_serializers=None,
+                 serializers_query_aliases=None, default_media_type=None,
+                 default_method_media_type=None, *args, **kwargs):
+        """Register the serializing functions.
+
+        Serializing functions will receive all named and non named arguments
+        provided to ``make_response`` or returned by request handling methods.
+        Recommended prototype is: ``serializer(data, code=200, headers=None)``
+        and it should return :class:`flask.Response` instances.
+
+        Serializing functions can also be overridden by setting
+        ``self.serializers``.
+
+        :param serializers: A mapping from mediatype to a serializer function.
+        :param method_serializers: A mapping of HTTP method name (GET, PUT,
+            PATCH, POST, DELETE) -> dict(mediatype -> serializer function). If
+            set, it overrides the serializers dict.
+        :param serializers_query_aliases: A mapping of values of the defined
+            query arg (see `config.REST_MIMETYPE_QUERY_ARG_NAME`) to valid
+            mimetypes: dict(alias -> mimetype).
+        :param default_media_type: Default media type used if no accept type
+            has been provided and global serializers are used for the request.
+            Can be None if there is only one global serializer or None. This
+            media type is used for method serializers too if
+            ``default_method_media_type`` is not set.
+        :param default_method_media_type: Default media type used if no accept
+            type has been provided and a specific method serializers are used
+            for the request. Can be ``None`` if the method has only one
+            serializer or ``None``.
+        """
+        super(MyContentNegotiatedMethodView, self).__init__()
+        self.serializers = serializers or None
+        self.default_media_type = default_media_type
+        self.default_method_media_type = default_method_media_type or {}
+
+        # set default default media_types if none has been given
+        if self.serializers and not self.default_media_type:
+            if len(self.serializers) == 1:
+                self.default_media_type = next(iter(self.serializers.keys()))
+            elif len(self.serializers) > 1:
+                raise ValueError('Multiple serializers with no default media'
+                                 ' type')
+        # set method serializers
+        self.method_serializers = ({key.upper(): func for key, func in
+                                    method_serializers.items()} if
+                                   method_serializers else {})
+        # set serializer aliases
+        self.serializers_query_aliases = serializers_query_aliases or {}
+        # create default method media_types dict if none has been given
+        if self.method_serializers and not self.default_method_media_type:
+            self.default_method_media_type = {}
+            for http_method, meth_serial in self.method_serializers.items():
+                if len(self.method_serializers[http_method]) == 1:
+                    self.default_method_media_type[http_method] = \
+                        next(iter(self.method_serializers[http_method].keys()))
+                elif len(self.method_serializers[http_method]) > 1:
+                    # try to use global default media type
+                    if default_media_type in \
+                            self.method_serializers[http_method]:
+                        self.default_method_media_type[http_method] = \
+                            default_media_type
+                    else:
+                        raise ValueError('Multiple serializers for method {0}'
+                                         'with no default media type'.format(
+                                             http_method))
+
+class B2ShareRecordsListResource(MyContentNegotiatedMethodView):
+    """Resource for records listing."""
+
+    view_name = '{0}_list'
+
+    def __init__(self, minter_name=None, pid_type=None,
+                 pid_fetcher=None, read_permission_factory=None,
+                 create_permission_factory=None,
+                 list_permission_factory=None,
+                 search_class=None,
+                 record_serializers=None,
+                 record_loaders=None,
+                 search_serializers=None, default_media_type=None,
+                 max_result_window=None, search_factory=None,
+                 item_links_factory=None, record_class=None,
+                 indexer_class=None, **kwargs):
+
+        """Constructor."""
+        super(B2ShareRecordsListResource, self).__init__(
+            method_serializers={
+                'GET': search_serializers,
+                'POST': record_serializers,
+            },
+            default_method_media_type={
+                'GET': default_media_type,
+                'POST': default_media_type,
+            },
+            default_media_type=default_media_type,
+            **kwargs)
+        self.pid_type = pid_type
+        self.minter = current_pidstore.minters[minter_name]
+        self.pid_fetcher = current_pidstore.fetchers[pid_fetcher]
+        self.read_permission_factory = read_permission_factory
+        self.create_permission_factory = create_permission_factory or \
+            current_records_rest.create_permission_factory
+        self.list_permission_factory = list_permission_factory or \
+            current_records_rest.list_permission_factory
+        self.search_class = search_class
+        self.max_result_window = max_result_window or 10000
+        self.search_factory = partial(search_factory, self)
+        self.item_links_factory = item_links_factory
+        self.loaders = record_loaders or \
+            current_records_rest.loaders
+        self.record_class = record_class or Record
+        self.indexer_class = indexer_class
+
+#   @need_record_permission('list_permission_factory')
+#   @use_paginate_args(
+#       default_size=lambda self: current_app.config.get(
+#           'RECORDS_REST_DEFAULT_RESULTS_SIZE', 10),
+#       max_results=lambda self: self.max_result_window,
+#   )
+    def get(self, pagination=None, **kwargs):
+        """Search records.
+        Permissions: the `list_permission_factory` permissions are
+            checked.
+        :returns: Search result containing hits and aggregations as
+                  returned by invenio-search.
+        """
+        # Arguments that must be added in prev/next links
+
+        return self.make_response(
+            pid_fetcher=self.pid_fetcher,
+            search_result = kwargs
+        )
 
     def post(self, **kwargs):
         """Create a record.
@@ -530,6 +671,7 @@ class RequestAccessResource(ContentNegotiatedMethodView):
 
         :param resolver: Persistent identifier resolver instance.
         """
+
         default_media_type = 'application/json'
         super(RequestAccessResource, self).__init__(
             serializers={

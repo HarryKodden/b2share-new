@@ -25,7 +25,7 @@
 
 from elasticsearch_dsl.query import Bool, Q
 from flask import has_request_context, request
-from invenio_search.api import RecordsSearch
+from invenio_search.api import RecordsSearch, MinShouldMatch
 from flask_security import current_user
 from invenio_access.permissions import (
     superuser_access, ParameterizedActionNeed
@@ -68,6 +68,11 @@ class B2ShareRecordsSearch(RecordsSearch):
     def __init__(self, all_versions=False, **kwargs):
         """Initialize instance."""
         super(B2ShareRecordsSearch, self).__init__(**kwargs)
+
+        return
+
+        # FIXME: Code below break !!!!
+
         if _in_draft_request():
             if not current_user.is_authenticated:
                 raise AnonymousDepositSearch()
@@ -94,7 +99,7 @@ class B2ShareRecordsSearch(RecordsSearch):
             self.query = Bool(
                 must=self.query._proxied,
                 should=filters,
-                minimum_should_match=1
+                minimum_should_match=MinShouldMatch("0<1")
             )
         else:
             if not all_versions:
@@ -103,5 +108,5 @@ class B2ShareRecordsSearch(RecordsSearch):
                 self.query = Bool(
                     must=self.query._proxied,
                     should=filters,
-                    minimum_should_match=1
+                    minimum_should_match=MinShouldMatch("0<1")
                 )

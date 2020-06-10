@@ -6,7 +6,7 @@ b2share_foo = b2share.modules.b2share_foo:B2SHARE_FOO
 b2share_communities = b2share.modules.communities.ext:B2ShareCommunities
 
 [invenio_base.api_apps]
-b2share_foo = b2share.modules.b2share_foo:B2SHARE_FOO
+#b2share_foo = b2share.modules.b2share_foo:B2SHARE_FOO
 b2share_apiroot = b2share.modules.apiroot:B2ShareApiRoot
 b2share_communities = b2share.modules.communities:B2ShareCommunities
 b2share_schemas = b2share.modules.schemas:B2ShareSchemas
@@ -27,12 +27,14 @@ invenio_pidrelations = invenio_pidrelations:InvenioPIDRelations
 
 [invenio_base.blueprints]
 b2share_foo = b2share.modules.b2share_foo.views:blueprint
-b2share_communities = b2share.modules.communities.views:blueprint
 b2share_users = b2share.modules.users.views:blueprint
+
+[invenio_base.api_blueprints]
 b2share_deposit = b2share.modules.deposit.views:blueprint
 b2share_records = b2share.modules.records.views:blueprint
+b2share_communities = b2share.modules.communities.views:blueprint
 
-[nvenio_db.models]
+[invenio_db.models]
 b2share_communities = b2share.modules.communities.models
 b2share_schemas = b2share.modules.schemas.models
 

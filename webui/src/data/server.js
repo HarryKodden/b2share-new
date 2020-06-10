@@ -7,7 +7,7 @@ import _ from 'lodash';
 
 const urlRoot = ""; // window.location.origin;
 
-export const loginURL = `${urlRoot}/api/oauth/login/b2access`;
+export const loginURL = `${urlRoot}/oauth/login/b2access`;
 
 const apiUrls = {
     root()                            { return `${urlRoot}/api/` },
