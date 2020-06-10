@@ -104,7 +104,7 @@ class B2AccessOAuthRemoteApp(OAuthRemoteApp):
             resp.close()
             return resp, content
 
-    def handle_oauth2_response(self, code=None):
+    def handle_oauth2_response(self, args):
         """Handles an oauth2 authorization response.
 
         This method overrides the one provided by OAuthRemoteApp in order to
@@ -118,7 +118,7 @@ class B2AccessOAuthRemoteApp(OAuthRemoteApp):
 
         client = self.make_client()
         remote_args = {
-            'code': request.args.get('code', code),
+            'code': args.get('code'),
             'client_secret': self.consumer_secret,
             'redirect_uri': (
                 session.get('%s_oauthredir' % self.name) or
