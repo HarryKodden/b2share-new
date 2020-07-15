@@ -19,7 +19,7 @@ blueprint = Blueprint(
     'b2share_records',
     __name__,
     template_folder='templates',
-    static_folder='static',
+    static_folder='static'
 )
 """Blueprint used for loading templates and static assets
 

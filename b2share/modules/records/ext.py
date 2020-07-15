@@ -37,8 +37,17 @@ from . tasks import update_record_files_async
 from . triggers import register_triggers
 from . errors import register_error_handlers
 
+from invenio_records_rest.utils import PIDConverter
+from invenio_indexer.signals import before_record_index
+from invenio_records_rest import utils
+
+from .views import create_blueprint
+from .indexer import indexer_receiver
+from .cli import b2records
+
+
 class B2ShareRecords(object):
-    """B2SHARE extension."""
+    """B2Share Records extension."""
 
     def __init__(self, app=None):
         """Extension initialization."""
@@ -46,13 +55,44 @@ class B2ShareRecords(object):
             self.init_app(app)
 
     def init_app(self, app):
-        """Flask application initialization."""
-        self.init_config(app)
-        app.extensions['b2share'] = self
         self._register_signals(app)
         app.cli.add_command(b2records)
         register_triggers(app)
         register_error_handlers(app)
+
+    def init_app(self, app):
+        """Flask application initialization."""
+        self.init_config(app)
+        app.extensions['b2share-records'] = self
+        self._register_signals(app)
+        app.cli.add_command(b2records)
+        register_triggers(app)
+        register_error_handlers(app)
+
+        app.logger.info("Creating enpoints...")
+
+        # Register records API blueprints
+        endpoints = app.config['B2SHARE_RECORDS_REST_ENDPOINTS']
+        #for i in endpoints:
+        #    app.logger.info("- Creating enpoint: {}".format(i))
+
+        app.register_blueprint(create_blueprint(endpoints))
+
+        @app.before_first_request
+        def extend_default_endpoint_prefixes():
+            """Fix the endpoint prefixes as ."""
+
+            endpoint_prefixes = utils.build_default_endpoint_prefixes(endpoints)
+            #app.logger.info("- Fixing endpoint: {}".format(endpoint_prefixes))
+
+            current_records_rest = app.extensions['invenio-records-rest']
+            current_records_rest.default_endpoint_prefixes.update(
+                endpoint_prefixes
+            )
+
+        before_record_index.connect(indexer_receiver, sender=app)
+        app.url_map.converters['pid'] = PIDConverter
+
 
     def init_config(self, app):
         """Initialize configuration.
@@ -90,59 +130,3 @@ class B2ShareRecords(object):
 
         file_deleted.connect(update_record_files_async, weak=False)
         file_uploaded.connect(update_record_files_async, weak=False)
-
-
-from invenio_records_rest.utils import PIDConverter
-from invenio_indexer.signals import before_record_index
-from invenio_records_rest import utils
-
-from .views import create_blueprint
-from .indexer import indexer_receiver
-from .cli import b2records
-
-
-
-class XXXB2ShareRecords(object):
-    """B2Share Records extension."""
-
-    def __init__(self, app=None):
-        """Extension initialization."""
-        if app:
-            self.init_app(app)
-
-    def init_app(self, app):
-        """Flask application initialization."""
-        self.init_config(app)
-        app.cli.add_command(b2records)
-        app.extensions['b2share-records'] = self
-        register_triggers(app)
-        register_error_handlers(app)
-
-        app.logger.info("Creating enpoints...")
-
-        # Register records API blueprints
-        endpoints = app.config['B2SHARE_RECORDS_REST_ENDPOINTS']
-        for i in endpoints:
-            app.logger.info("- Creating enpoint: {}".format(i))
-
-        app.register_blueprint(create_blueprint(endpoints))
-
-        @app.before_first_request
-        def extend_default_endpoint_prefixes():
-            """Fix the endpoint prefixes as ."""
-
-            endpoint_prefixes = utils.build_default_endpoint_prefixes(endpoints)
-            app.logger.info("- Fixing endpoint: {}".format(endpoint_prefixes))
-
-            current_records_rest = app.extensions['invenio-records-rest']
-            current_records_rest.default_endpoint_prefixes.update(
-                endpoint_prefixes
-            )
-
-        before_record_index.connect(indexer_receiver, sender=app)
-        app.url_map.converters['pid'] = PIDConverter
-
-
-    def init_config(self, app):
-        """Initialize configuration."""
-        pass

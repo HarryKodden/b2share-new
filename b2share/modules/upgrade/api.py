@@ -72,6 +72,9 @@ def upgrade_to_last_version(verbose):
         else:
             all_migrations = Migration.query.order_by(
                 Migration.updated.desc()).all()
+            
+            click.secho(all_migrations)
+            
             last_migration = all_migrations[0]
             if last_migration.success:
                 if last_migration.version == last_version:

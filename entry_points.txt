@@ -2,11 +2,14 @@
 b2share = b2share.cli:cli
 
 [invenio_base.apps]
-b2share_foo = b2share.modules.b2share_foo:B2SHARE_FOO
+b2share_main = b2share.modules.b2share_main:B2SHARE_MAIN
+b2share_demo = b2share.modules.b2share_demo:B2ShareDemo
 b2share_communities = b2share.modules.communities.ext:B2ShareCommunities
+b2share_upgrade = b2share.modules.upgrade:B2ShareUpgrade
+b2share_schemas = b2share.modules.schemas:B2ShareSchemas
 
 [invenio_base.api_apps]
-#b2share_foo = b2share.modules.b2share_foo:B2SHARE_FOO
+b2share_main = b2share.modules.b2share_main:B2SHARE_MAIN
 b2share_apiroot = b2share.modules.apiroot:B2ShareApiRoot
 b2share_communities = b2share.modules.communities:B2ShareCommunities
 b2share_schemas = b2share.modules.schemas:B2ShareSchemas
@@ -18,7 +21,6 @@ b2share_files = b2share.modules.files:B2ShareFiles
 b2share_remotes = b2share.modules.remotes:B2ShareRemotes
 b2share_access = b2share.modules.access:B2ShareAccess
 b2share_oaiserver = b2share.modules.oaiserver:B2ShareOAIServer
-b2share_upgrade = b2share.modules.upgrade:B2ShareUpgrade
 invenio_oauthclient = invenio_oauthclient:InvenioOAuthClient
 invenio_oauth2server = invenio_oauth2server:InvenioOAuth2Server
 invenio_mail = invenio_mail:InvenioMail
@@ -26,13 +28,16 @@ invenio_oaiserver = invenio_oaiserver:InvenioOAIServer
 invenio_pidrelations = invenio_pidrelations:InvenioPIDRelations
 
 [invenio_base.blueprints]
-b2share_foo = b2share.modules.b2share_foo.views:blueprint
+b2share_main = b2share.modules.b2share_main.views:blueprint
 b2share_users = b2share.modules.users.views:blueprint
-
-[invenio_base.api_blueprints]
+b2share_schemas = b2share.modules.schemas.views:blueprint
 b2share_deposit = b2share.modules.deposit.views:blueprint
 b2share_records = b2share.modules.records.views:blueprint
+
+[invenio_base.api_blueprints]
 b2share_communities = b2share.modules.communities.views:blueprint
+invenio_oauthclient = invenio_oauthclient.views.client:blueprint
+invenio_oaiserver = invenio_oaiserver.views.server:blueprint
 
 [invenio_db.models]
 b2share_communities = b2share.modules.communities.models

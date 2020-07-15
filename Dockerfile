@@ -76,24 +76,24 @@ ADD b2share b2share
 
 # Prepare application frontend...
 
-COPY webui/app b2share/modules/b2share_foo/static
+COPY webui/app b2share/modules/b2share_main/static
 
-RUN mv b2share/modules/b2share_foo/static/index.html b2share/modules/b2share_foo/templates/b2share_foo/page.html
+RUN mv b2share/modules/b2share_main/static/index.html b2share/modules/b2share_main/templates/b2share_main/page.html
 
 # Add generated files into lib sub directories...
-COPY --from=build-deps /opt/app/b2share-bundle.* b2share/modules/b2share_foo/static/
-COPY --from=build-deps /opt/node_modules/bootstrap/dist/css/bootstrap.min.* b2share/modules/b2share_foo/static/lib/css/
-COPY --from=build-deps /opt/node_modules/bootstrap-grid/dist/grid.min.css b2share/modules/b2share_foo/static/lib/css/bootstrap-grid.min.css
-COPY --from=build-deps /opt/node_modules/react-widgets/dist/css/* b2share/modules/b2share_foo/static/lib/css/
-COPY --from=build-deps /opt/node_modules/font-awesome/css/* b2share/modules/b2share_foo/static/lib/css/
-COPY --from=build-deps /opt/node_modules/react-toggle/style.css b2share/modules/b2share_foo/static/lib/css/toggle-style.css
-COPY --from=build-deps /opt/node_modules/bootstrap/dist/fonts/* b2share/modules/b2share_foo/static/lib/fonts/
-COPY --from=build-deps /opt/node_modules/react-widgets/dist/fonts/* b2share/modules/b2share_foo/static/lib/fonts/
-COPY --from=build-deps /opt/node_modules/font-awesome/* b2share/modules/b2share_foo/static/lib/fonts/
-COPY --from=build-deps /opt/node_modules/react-widgets/dist/img/* b2share/modules/b2share_foo/static/lib/img/
+COPY --from=build-deps /opt/app/b2share-bundle.* b2share/modules/b2share_main/static/
+COPY --from=build-deps /opt/node_modules/bootstrap/dist/css/bootstrap.min.* b2share/modules/b2share_main/static/lib/css/
+COPY --from=build-deps /opt/node_modules/bootstrap-grid/dist/grid.min.css b2share/modules/b2share_main/static/lib/css/bootstrap-grid.min.css
+COPY --from=build-deps /opt/node_modules/react-widgets/dist/css/* b2share/modules/b2share_main/static/lib/css/
+COPY --from=build-deps /opt/node_modules/font-awesome/css/* b2share/modules/b2share_main/static/lib/css/
+COPY --from=build-deps /opt/node_modules/react-toggle/style.css b2share/modules/b2share_main/static/lib/css/toggle-style.css
+COPY --from=build-deps /opt/node_modules/bootstrap/dist/fonts/* b2share/modules/b2share_main/static/lib/fonts/
+COPY --from=build-deps /opt/node_modules/react-widgets/dist/fonts/* b2share/modules/b2share_main/static/lib/fonts/
+COPY --from=build-deps /opt/node_modules/font-awesome/* b2share/modules/b2share_main/static/lib/fonts/
+COPY --from=build-deps /opt/node_modules/react-widgets/dist/img/* b2share/modules/b2share_main/static/lib/img/
 
 # Add License Selector
-COPY --from=build-deps /tmp/public-license-selector/dist/license-selector.* b2share/modules/b2share_foo/static/vendors/
+COPY --from=build-deps /tmp/public-license-selector/dist/license-selector.* b2share/modules/b2share_main/static/vendors/
 
 RUN pip install --upgrade pip
 RUN pip install -e .[all,postgresql,elasticsearch7]

@@ -70,14 +70,20 @@ services:
         b2share db init
         b2share index init
         b2share alembic upgrade
-        # Initialize file location
+        # Bootstrap schemas
+        b2share schemas init
+        # load initial data
+        b2share demo load-data -v
+        # Set default file location
         b2share files location --default 'default-location' /opt/var/data
+        # Collec all static content
         b2share collect -v
         # Create admin role to restrict access
         b2share roles create admin
         b2share access allow superuser-access role admin
         # Start server...
-        uwsgi --ini /opt/app/b2share/wsgi.ini
+        tail -f /dev/null
+        # uwsgi --ini /opt/app/b2share/wsgi_ui.ini
     links:
       - cache
       - es
@@ -92,7 +98,7 @@ services:
     volumes:
       - uploaded_data:/opt/var/data
       - archived_data:/opt/var/archive
-    command: uwsgi --ini /opt/app/b2share/wsgi.ini
+    command: uwsgi --ini /opt/app/b2share/wsgi_api.ini
     links:
       - cache
       - es

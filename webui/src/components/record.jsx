@@ -135,7 +135,7 @@ const Record = React.createClass({
                         <Link to={"/communities/"+community.get('name')}>
                             <div className="community-small passive" title={community.get('description')}>
                                 <p className="name">{community.get('name')}</p>
-                                <img className="logo" src={community.get('logo')}/>
+                                <img className="logo" src={'/static'.concat(community.get('logo'))}/>
                             </div>
                         </Link>
                     </div>

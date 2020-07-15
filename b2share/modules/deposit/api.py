@@ -60,7 +60,6 @@ from .minters import b2share_deposit_uuid_minter
 from .fetchers import b2share_deposit_uuid_fetcher
 from .providers import DepositUUIDProvider
 
-
 class PublicationStates(Enum):
     """States of a record."""
     draft = 1
@@ -70,11 +69,21 @@ class PublicationStates(Enum):
     published = 3
     """Deposit is published."""
 
+def generate_external_pids(record):
+    """Generate the list of external files of a record sorted by key."""
+    external_pids = []
+    current_file_keys = [f for f in record.files if
+                         f.obj.file.storage_class == 'B']
+    current_file_keys.sort(key=lambda f: f.obj.key)
+    for f in current_file_keys:
+        external_pids.append({'key': f.obj.key,
+                              'ePIC_PID': f.obj.file.uri})
+    return external_pids
+
+from .. records.api import B2ShareRecord
 
 class Deposit(InvenioDeposit):
     """B2Share Deposit API."""
-
-    from b2share.modules.records.api import B2ShareRecord
 
     published_record_class = B2ShareRecord
     """Record API class used for published records."""
@@ -569,18 +578,6 @@ def copy_data_from_previous(previous_record):
         copied_data['_deposit'] = {'external_pids': external_pids}
         copied_data['_files'] = files
     return copied_data
-
-
-def generate_external_pids(record):
-    """Generate the list of external files of a record sorted by key."""
-    external_pids = []
-    current_file_keys = [f for f in record.files if
-                         f.obj.file.storage_class == 'B']
-    current_file_keys.sort(key=lambda f: f.obj.key)
-    for f in current_file_keys:
-        external_pids.append({'key': f.obj.key,
-                              'ePIC_PID': f.obj.file.uri})
-    return external_pids
 
 
 copy_data_from_previous.extra_removed_fields = [

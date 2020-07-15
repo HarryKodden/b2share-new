@@ -58,7 +58,7 @@ const CommunityList = React.createClass({
                 <Link to={"/communities/"+name}>
                     <div className="community link">
                         <h3 className="name">{name}</h3>
-                        <img className="logo" src={logo}/>
+                        <img className="logo" src={'/static'.concat(logo)}/>
                         <p className="description"> {description.substring(0,200)} </p>
                     </div>
                 </Link>
@@ -123,7 +123,7 @@ const Community = React.createClass({
                 <div className="col-sm-6">
                     <div className="community-small passive" title={community.get('description')}>
                         <p className="name">{community.get('name')}</p>
-                        <img className="logo" src={community.get('logo')}/>
+                        <img className="logo" src={'/static'.concat(community.get('logo'))}/>
                     </div>
                 </div>
             </div>

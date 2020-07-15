@@ -38,15 +38,13 @@ from invenio_access.models import ActionUsers, ActionRoles
 from flask_security import current_user
 from invenio_accounts.models import userrole
 
-from b2share.modules.deposit.api import generate_external_pids
-
 from flask import request, abort
 from b2share.modules.access.permissions import (AuthenticatedNeed,
                                                 OrPermissions, AndPermissions,
                                                 StrictDynamicPermission)
 from invenio_db import db
 
-from .api import PublicationStates
+from .api import generate_external_pids, PublicationStates
 from .loaders import deposit_patch_input_loader
 
 

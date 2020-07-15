@@ -15,7 +15,7 @@ export function renderSmallCommunity(community, selected, onClickFn) {
                 title={community.get('description')}
                 onClick={onClickFn ? onClickFn : ()=>{}}>
             <p className="name">{community.get('name')}</p>
-            <img className="logo" src={community.get('logo')}/>
+            <img className="logo" src={'/static'.concat(community.get('logo'))}/>
         </a>
     );
 }

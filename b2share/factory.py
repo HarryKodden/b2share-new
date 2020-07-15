@@ -36,8 +36,6 @@ invenio_config_loader = create_config_loader(
 @app_created.connect
 def receiver_app_created(sender, app=None, **kwargs):
     app.logger.info("Application created")
-    add_routes(app)
-
 
 @app_loaded.connect
 def receiver_app_loaded(sender, app=None, **kwargs):
@@ -145,19 +143,19 @@ create_api = create_app_factory(
 )
 """Flask application factory for Invenio REST API."""
 
-create_ui = create_app_factory(
-    'invenio',
-    config_loader=config_loader,
-    blueprint_entry_points=['invenio_base.blueprints'],
-    extension_entry_points=['invenio_base.apps'],
-    converter_entry_points=['invenio_base.converters'],
-    wsgi_factory=wsgi_proxyfix(),
-    instance_path=instance_path,
-    static_folder=static_folder,
-    static_url_path=static_url_path(),
-    app_class=app_class(),
-)
-"""Flask application factory for Invenio UI."""
+#create_ui = create_app_factory(
+#    'invenio',
+#    config_loader=config_loader,
+#    blueprint_entry_points=['invenio_base.blueprints'],
+#    extension_entry_points=['invenio_base.apps'],
+#    converter_entry_points=['invenio_base.converters'],
+#    wsgi_factory=wsgi_proxyfix(),
+#    instance_path=instance_path,
+#    static_folder=static_folder,
+#    static_url_path=static_url_path(),
+#    app_class=app_class(),
+#)
+#"""Flask application factory for Invenio UI."""
 
 create_app = create_app_factory(
     'invenio',
@@ -171,52 +169,10 @@ create_app = create_app_factory(
     static_url_path=static_url_path(),
     app_class=app_class(),
 )
-"""Flask application factory for combined UI + REST API.
+"""Flask application factory used for CLI, UI and API for combined UI + REST API.
 
 REST API is mounted under ``/api``.
 """
-
-
-def add_routes(app_ui):
-
-    return
-
-    app_ui.logger.info("Adding routes...")
-
-#   @app_ui.route('/')
-#   def root():
-#       return app_ui.send_static_file('/static/index.html')
-
-    @app_ui.route('/help', defaults={'path': ''})
-    @app_ui.route('/help/', defaults={'path': ''})
-    @app_ui.route('/help/<path:path>')
-    def serve_help(path):
-        return app_ui.send_static_file('/static/index.html')
-
-    @app_ui.route('/communities', defaults={'path': ''})
-    @app_ui.route('/communities/', defaults={'path': ''})
-    @app_ui.route('/communities/<path:path>')
-    def serve_communities(path):
-        return app_ui.send_static_file('/static/index.html')
-
-    @app_ui.route('/user', defaults={'path': ''})
-    @app_ui.route('/user/', defaults={'path': ''})
-    @app_ui.route('/user/<path:path>')
-    def serve_user(path):
-        return app_ui.send_static_file('/static/index.html')
-
-    @app_ui.route('/records', defaults={'path': ''})
-    @app_ui.route('/records/', defaults={'path': ''})
-    @app_ui.route('/records/<path:path>')
-    def serve_records(path):
-        return app_ui.send_static_file('/static/index.html')
-
-    @app_ui.route('/search', defaults={'path': ''})
-    @app_ui.route('/search/', defaults={'path': ''})
-    @app_ui.route('/search/<path:path>')
-    def serve_search(path):
-        return app_ui.send_static_file('/static/index.html')
-
 
 def check_configuration(config, logger):
     errors_found = False
@@ -233,7 +189,6 @@ def check_configuration(config, logger):
         error("Environment variable not defined: B2SHARE_SECRET_KEY")
 
     check('SQLALCHEMY_DATABASE_URI')
-
     check('JSONSCHEMAS_HOST')
     check('PREFERRED_URL_SCHEME')
 

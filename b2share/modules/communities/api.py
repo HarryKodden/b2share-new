@@ -43,7 +43,7 @@ from .errors import CommunityDeletedError, CommunityDoesNotExistError, \
 from .signals import after_community_delete, after_community_insert, \
     after_community_update, before_community_delete, before_community_insert, \
     before_community_update
-    
+
 from .models import Community as CommunityMetadata, _community_admin_role_name, \
     _community_member_role_name
 
@@ -143,15 +143,18 @@ class Community(object):
         """
         try:
             with db.session.begin_nested():
-                kwargs = {}
+
+                kwargs = {
+                    'name': name,
+                    'description': description,
+                    'logo': logo,
+                    'publication_workflow': publication_workflow,
+                    'restricted_submission': restricted_submission
+                }
+
                 if id_ is not None:
                     kwargs['id'] = id_
-                model = CommunityMetadata(name=name,
-                                          description=description,
-                                          logo=logo,
-                                          publication_workflow=publication_workflow,
-                                          restricted_submission=restricted_submission,
-                                          **kwargs)
+                model = CommunityMetadata(**kwargs)
                 community = cls(model)
                 before_community_insert.send(community)
                 db.session.add(model)
