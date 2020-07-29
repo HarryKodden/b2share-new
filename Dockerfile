@@ -98,6 +98,9 @@ COPY --from=build-deps /tmp/public-license-selector/dist/license-selector.* b2sh
 RUN pip install --upgrade pip
 RUN pip install -e .[all,postgresql,elasticsearch7]
 
+# Optional for debugging....
+RUN pip install flask_DebugToolBar
+
 EXPOSE 5000
 
 CMD ["b2share"]

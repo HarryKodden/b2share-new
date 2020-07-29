@@ -147,12 +147,12 @@ SECRET_KEY = 'CHANGE_ME'
 #: Max upload size for form data via application/mulitpart-formdata.
 MAX_CONTENT_LENGTH = 100 * 1024 * 1024  # 100 MiB
 #: Sets cookie with the secure flag by default
-SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = (os.environ.get('SESSION_COOKIE_SECURE', "True").upper() == "True".upper())
 #: Since HAProxy and Nginx route all requests no matter the host header
 #: provided, the allowed hosts variable is set to localhost. In production it
 #: should be set to the correct host and it is strongly recommended to only
 #: route correct hosts to the application.
-APP_ALLOWED_HOSTS = [ 'localhost', '127.0.0.1' ]
+APP_ALLOWED_HOSTS = [ 'localhost', '127.0.0.1', 'b2share.localhost' ]
 
 # OAI-PMH
 # =======
@@ -326,7 +326,6 @@ FILES_REST_STORAGE_CLASS_LIST = dict(
     S='Standard',
     A='Archived'
 )
-
 
 RECORDS_REST_DEFAULT_SORT = dict(
     records=dict(
@@ -637,3 +636,6 @@ SECURITY_SEND_REGISTER_EMAIL=False
 SECURITY_SEND_PASSWORD_CHANGE_EMAIL=False
 SECURITY_SEND_PASSWORD_RESET_NOTICE_EMAIL=False
 
+# Extra (Harry Kodden)
+# When testing in HTTP, both cookie secure and CSRF enforcement is switched off
+APP_ENABLE_SECURE_HEADERS = (os.environ.get('SESSION_COOKIE_SECURE', "True").upper() == "True".upper())

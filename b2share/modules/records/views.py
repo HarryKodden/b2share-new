@@ -93,11 +93,11 @@ blueprint = Blueprint(
 
 def create_blueprint(endpoints):
     for endpoint, options in (endpoints or {}).items():
-        print("Endpoint: {}".format(endpoint))
-        print("- options: {}".format(options))
+        #print("Endpoint: {}".format(endpoint))
+        #print("- options: {}".format(options))
 
         for rule in create_url_rules(endpoint, **options):
-            print("- rule: {}".format(rule))
+            #print("- rule: {}".format(rule))
             blueprint.add_url_rule(**rule)
 
     # catch record validation errors

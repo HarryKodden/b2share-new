@@ -57,7 +57,7 @@ services:
     extends:
       file: docker-services.yml
       service: app
-    image: b2share_app
+    image: b2share_app:latest
     volumes:
       - static_data:/opt/var/static
       - uploaded_data:/opt/var/data
@@ -94,7 +94,7 @@ services:
     extends:
       file: docker-services.yml
       service: app
-    image: b2share_app
+    image: b2share_app:latest
     volumes:
       - uploaded_data:/opt/var/data
       - archived_data:/opt/var/archive
@@ -109,7 +109,7 @@ services:
     extends:
       file: docker-services.yml
       service: app
-    image: b2share_app
+    image: b2share_app:latest
     restart: "always"
     command: celery worker -A invenio_app.celery --loglevel=INFO
     links:

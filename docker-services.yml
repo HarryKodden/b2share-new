@@ -24,10 +24,12 @@ services:
       - "INVENIO_SQLALCHEMY_DATABASE_URI=postgresql+psycopg2://b2share:b2share@db/b2share"
       - "INVENIO_WSGI_PROXIES=2"
       - "INVENIO_RATELIMIT_STORAGE_URL=redis://cache:6379/3"
+      - "B2SHARE_UI_PATH=/opt/var/static"
       - "USE_STAGING_B2ACCESS=1"
       - "FLASK_DEBUG=1"
       - "B2ACCESS_CONSUMER_KEY=${MY_B2ACCESS_CONSUMER_KEY}"
       - "B2ACCESS_SECRET_KEY=${MY_B2ACCESS_SECRET_KEY}"
+      - "SESSION_COOKIE_SECURE=False"
   lb:
     build: ./docker/haproxy/
 #   image: b2share-lb
