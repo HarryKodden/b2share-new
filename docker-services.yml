@@ -29,7 +29,13 @@ services:
       - "FLASK_DEBUG=1"
       - "B2ACCESS_CONSUMER_KEY=${MY_B2ACCESS_CONSUMER_KEY}"
       - "B2ACCESS_SECRET_KEY=${MY_B2ACCESS_SECRET_KEY}"
-      - "SESSION_COOKIE_SECURE=False"
+      - "SESSION_COOKIE_SECURE=True"
+      - "SERVER_NAME=${SERVER_NAME}"
+#     - "SERVER_INTERNAL_NAME=${SERVER_INTERNAL_NAME}"
+#     - "SERVER_INTERNAL_IP=${SERVER_INTERNAL_IP}"
+      - "JSONSCHEMAS_HOST=${JSONSCHEMAS_HOST}"
+#   extra_hosts:
+#     - "${SERVER_INTERNAL_NAME}:${SERVER_INTERNAL_IP}"
   lb:
     build: ./docker/haproxy/
 #   image: b2share-lb

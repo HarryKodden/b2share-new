@@ -52,6 +52,22 @@ services:
     links:
       - web-ui
       - web-api
+  # API Rest Application
+  web-api:
+    extends:
+      file: docker-services.yml
+      service: app
+    image: b2share_app:latest
+    volumes:
+      - uploaded_data:/opt/var/data
+      - archived_data:/opt/var/archive
+    command: uwsgi --ini /opt/app/b2share/wsgi_api.ini
+    links:
+      - cache
+      - es
+      - mq
+      - db
+
   # Application UI Application
   web-ui:
     extends:
@@ -73,7 +89,7 @@ services:
         # Bootstrap schemas
         b2share schemas init
         # load initial data
-        b2share demo load-data -v
+        # b2share demo load-data -v
         # Set default file location
         b2share files location --default 'default-location' /opt/var/data
         # Collec all static content
@@ -89,21 +105,7 @@ services:
       - es
       - mq
       - db
-  # API Rest Application
-  web-api:
-    extends:
-      file: docker-services.yml
-      service: app
-    image: b2share_app:latest
-    volumes:
-      - uploaded_data:/opt/var/data
-      - archived_data:/opt/var/archive
-    command: uwsgi --ini /opt/app/b2share/wsgi_api.ini
-    links:
-      - cache
-      - es
-      - mq
-      - db
+
   # Worker
   worker:
     extends:

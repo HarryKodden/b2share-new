@@ -131,7 +131,12 @@ def validate_json_schema(new_json_schema, prev_schemas):
 
     for prev_schema in prev_schemas:
         schema_validator.validate(json.loads(prev_schema), 'prevs')
-    schema_validator.validate(new_json_schema, 'current schema')
+
+    try:
+        schema_validator.validate(new_json_schema, 'current schema')
+    except:
+        print("[TODO EXPLAIN WHY] Validation against 'current schema' has failed...", new_json_schema)
+
     try:
         super_schema = resolve_json(new_json_schema['$schema'])
     except URLError as e:
