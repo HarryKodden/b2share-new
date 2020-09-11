@@ -36,8 +36,9 @@ blueprint = Blueprint(
 @blueprint.route('/search/', defaults={'path': ''})
 @blueprint.route('/search/<path:path>')
 @blueprint.route("/")
+
 def index(path=''):
     """Render a basic view."""
     return render_template(
-        "b2share_main/index.html",
+        "b2share_main/page.html",
         module_name=_('B2SHARE_MAIN'))

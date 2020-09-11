@@ -52,6 +52,7 @@ services:
     links:
       - web-ui
       - web-api
+
   # API Rest Application
   web-api:
     extends:
@@ -78,6 +79,8 @@ services:
       - static_data:/opt/var/static
       - uploaded_data:/opt/var/data
       - archived_data:/opt/var/archive
+    ports:
+      - "5000:5000"
     command:
       - /bin/sh
       - -c
@@ -91,7 +94,7 @@ services:
         # load initial data
         # b2share demo load-data -v
         # Set default file location
-        b2share files location --default 'default-location' /opt/var/data
+        # b2share files location --default 'default-location' /opt/var/data
         # Collec all static content
         b2share collect -v
         # Create admin role to restrict access

@@ -155,7 +155,7 @@ SESSION_COOKIE_SECURE = (os.environ.get('SESSION_COOKIE_SECURE', "True").upper()
 #: provided, the allowed hosts variable is set to localhost. In production it
 #: should be set to the correct host and it is strongly recommended to only
 #: route correct hosts to the application.
-APP_ALLOWED_HOSTS = [ os.environ.get("SERVER_INTERNAL_NAME", 'localhost'), os.environ.get("SERVER_INTERNAL_IP", '127.0.0.1') ]
+APP_ALLOWED_HOSTS = [ os.environ.get("SERVER_NAME", 'localhost'), os.environ.get("SERVER_INTERNAL_IP", '127.0.0.1') ]
 
 # OAI-PMH
 # =======
@@ -643,3 +643,6 @@ SECURITY_SEND_PASSWORD_RESET_NOTICE_EMAIL=False
 # Extra (Harry Kodden)
 # When testing in HTTP, both cookie secure and CSRF enforcement is switched off
 APP_ENABLE_SECURE_HEADERS = (os.environ.get('SESSION_COOKIE_SECURE', "True").upper() == "True".upper())
+
+SESSION_COOKIE_PATH="/"
+SESSION_COOKIE_SAMESITE="Lax"
