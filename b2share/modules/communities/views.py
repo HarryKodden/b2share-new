@@ -53,7 +53,7 @@ current_communities = LocalProxy(
 blueprint = Blueprint(
     'b2share_communities',
     __name__,
-    url_prefix='/communities'
+    url_prefix='/api/communities'
 )
 
 

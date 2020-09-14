@@ -106,6 +106,9 @@ extras_require = {
 		'Flask-Login<0.5.0',
 		'Flask-Principal>=0.4.0',
 	],
+    'nbconvert' [
+        'nbconvert==4.1.0',
+    ],
 	'uwsgi': [
 		'Werkzeug==0.16.1',
 	],

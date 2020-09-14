@@ -37,7 +37,6 @@ b2share_records = b2share.modules.records.views:blueprint
 invenio_oauthclient = invenio_oauthclient.views.client:blueprint
 
 [invenio_base.api_blueprints]
-b2share_communities = b2share.modules.communities.views:blueprint
 invenio_oaiserver = invenio_oaiserver.views.server:blueprint
 
 [invenio_db.models]

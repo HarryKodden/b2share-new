@@ -39,6 +39,7 @@ from .b2drop import B2DropClient
 blueprint = Blueprint(
     'remotes',
     __name__,
+    url_prefix = '/api'
 )
 
 
