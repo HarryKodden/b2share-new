@@ -106,8 +106,11 @@ extras_require = {
 		'Flask-Login<0.5.0',
 		'Flask-Principal>=0.4.0',
 	],
-    'nbconvert' [
+    'misc': [
         'nbconvert==4.1.0',
+        'jupyter-client==6.1.7',
+        'jupyter-core==4.6.3',
+        'jupyterlab-pygments==0.1.1',
     ],
 	'uwsgi': [
 		'Werkzeug==0.16.1',
