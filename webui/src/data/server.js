@@ -1018,24 +1018,24 @@ export const browser = {
     },
 
     gotoProfile() {
-        browserHistory.push(`/user`);
+        browserHistory.push(`/api/user`);
     },
 
     getRecordURL(recordId) {
-        return `${window.location.origin}/records/${recordId}`;
+        return `${window.location.origin}/api/records/${recordId}`;
     },
 
     gotoSearch({q, community, sort, page, size, drafts}) {
         const queryString = encode({q, community, sort, page, size, drafts});
         // trigger a route reload which will do the new search, see SearchRecordRoute
-        browserHistory.push(`/records/?${queryString}`);
+        browserHistory.push(`/api/records/?${queryString}`);
     },
 
     gotoRecord(recordId) {
-        browserHistory.push(`/records/${recordId}`);
+        browserHistory.push(`/api/records/${recordId}`);
     },
 
     gotoEditRecord(recordId) {
-        browserHistory.push(`/records/${recordId}/edit`);
+        browserHistory.push(`/api/records/${recordId}/edit`);
     },
 }

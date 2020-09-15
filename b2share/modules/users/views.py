@@ -38,7 +38,7 @@ from .serializers import (user_to_json_serializer,
 blueprint = Blueprint(
     'b2share_users',
     __name__,
-    url_prefix='/api/user'
+    url_prefix='/user'
 )
 
 

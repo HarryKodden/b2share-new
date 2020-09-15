@@ -52,7 +52,8 @@ from invenio_db import db
 
 blueprint = Blueprint(
     'b2share_schemas',
-    __name__
+    __name__,
+    url_prexix="/schemas"
 )
 
 
@@ -291,23 +292,23 @@ class BlockSchemaResource(ContentNegotiatedMethodView):
 
 
 blueprint.add_url_rule(
-    '/api/schemas/<string:schema_id>/versions/<string:schema_version_nb>',
+    '/schemas/<string:schema_id>/versions/<string:schema_version_nb>',
     view_func=BlockSchemaVersionResource
         .as_view(BlockSchemaVersionResource.view_name))
 
 
 blueprint.add_url_rule(
-    '/api/communities/<string:community_id>/schemas/<string:schema_version_nb>',
+    '/communities/<string:community_id>/schemas/<string:schema_version_nb>',
     view_func=CommunitySchemaResource
         .as_view(CommunitySchemaResource.view_name))
 
 
 blueprint.add_url_rule(
-    '/api/schemas/<string:schema_id>',
+    '/schemas/<string:schema_id>',
     view_func=BlockSchemaResource
         .as_view(BlockSchemaResource.view_name))
 
 blueprint.add_url_rule(
-    '/api/schemas',
+    '/schemas',
     view_func=BlockSchemaListResource
         .as_view(BlockSchemaListResource.view_name))
