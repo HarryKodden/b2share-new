@@ -52,8 +52,7 @@ from invenio_db import db
 
 blueprint = Blueprint(
     'b2share_schemas',
-    __name__,
-    url_prexix="/schemas"
+    __name__
 )
 
 

@@ -5,8 +5,8 @@ b2share = b2share.cli:cli
 b2share_main = b2share.modules.b2share_main:B2SHARE_MAIN
 b2share_demo = b2share.modules.b2share_demo:B2ShareDemo
 b2share_upgrade = b2share.modules.upgrade:B2ShareUpgrade
-b2share_schemas = b2share.modules.schemas:B2ShareSchemas
 b2share_communities = b2share.modules.communities:B2ShareCommunities
+b2share_schemas = b2share.modules.schemas:B2ShareSchemas
 
 [invenio_base.api_apps]
 b2share_main = b2share.modules.b2share_main:B2SHARE_MAIN
@@ -29,26 +29,25 @@ invenio_pidrelations = invenio_pidrelations:InvenioPIDRelations
 
 [invenio_base.blueprints]
 b2share_main = b2share.modules.b2share_main.views:blueprint
-#b2share_users = b2share.modules.users.views:blueprint
-#b2share_deposit = b2share.modules.deposit.views:blueprint
-#b2share_records = b2share.modules.records.views:blueprint
+b2share_records = b2share.modules.records.views:blueprint
 invenio_oauthclient = invenio_oauthclient.views.client:blueprint
 
 [invenio_base.api_blueprints]
 invenio_oaiserver = invenio_oaiserver.views.server:blueprint
 b2share_communities = b2share.modules.communities.views:blueprint
-b2share_users = b2share.modules.users.views:blueprint
+b2share_schemas = b2share.modules.schemas.views:blueprint
 b2share_deposit = b2share.modules.deposit.views:blueprint
-b2share_records = b2share.modules.records.views:blueprint
+b2share_users = b2share.modules.users.views:blueprint
 
 [invenio_db.models]
+b2share_upgrade = b2share.modules.upgrade.models
 b2share_communities = b2share.modules.communities.models
 b2share_schemas = b2share.modules.schemas.models
 
 [invenio_db.alembic]
+b2share_upgrade = b2share.modules.upgrade:alembic
 b2share_communities = b2share.modules.communities:alembic
 b2share_schemas = b2share.modules.schemas:alembic
-b2share_upgrade = b2share.modules.upgrade:alembic
 
 [invenio_records.jsonresolver]
 b2share_schemas = b2share.modules.schemas.jsonresolver
