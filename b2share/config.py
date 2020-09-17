@@ -255,8 +255,8 @@ B2SHARE_RECORDS_REST_ENDPOINTS = dict(
             # 'b2share.modules.deposit.loaders:deposit_record_loader'
         },
         default_media_type='application/json',
-        list_route='/api/records/',
-        item_route='/api/records/<pid(b2rec,record_class="b2share.modules.records.api:B2ShareRecord"):pid_value>',
+        list_route='/records/',
+        item_route='/records/<pid(b2rec,record_class="b2share.modules.records.api:B2ShareRecord"):pid_value>',
         create_permission_factory_imp=CreateDepositPermission,
         read_permission_factory_imp=allow_all,
         update_permission_factory_imp=UpdateRecordPermission,
@@ -305,7 +305,7 @@ B2SHARE_DEPOSIT_REST_ENDPOINTS = dict(
             # lambda: request.get_json(),
             # 'b2share.modules.deposit.loaders:deposit_record_loader'
         },
-        item_route='/api/records/<{0}:pid_value>/draft'.format(DEPOSIT_PID),
+        item_route='/records/<{0}:pid_value>/draft'.format(DEPOSIT_PID),
         create_permission_factory_imp=deny_all,
         read_permission_factory_imp=ReadDepositPermission,
         update_permission_factory_imp=UpdateDepositPermission,
