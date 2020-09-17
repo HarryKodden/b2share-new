@@ -7,7 +7,7 @@ from flask_login import current_user
 from invenio_search import RecordsSearch
 from invenio_search.api import DefaultFilter
 
-from .permissions import admin_permission_factory
+from invenio_deposit.permissions import admin_permission_factory
 
 
 def deposits_filter():

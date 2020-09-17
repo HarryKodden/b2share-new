@@ -7,9 +7,10 @@
 
 """EUDAT Collaborative Data Infrastructure."""
 
-import os
+import os, sys
 
 from setuptools import find_packages, setup
+from setuptools.command.test import test as TestCommand
 
 readme = open('README.rst').read()
 
@@ -56,6 +57,7 @@ extras_require = {
         'invenio-records>=1.3.1,<1.4.0',
         'invenio-search-ui>=2.0.0a2,<2.1.0',
 		'invenio_pidrelations>=-1.0.0a6',
+        'invenio-queues-1.0.0a2',
 		'invenio-marc21>=1.0.0a9',
 		'jsonresolver==0.2.1',
 		'datacite>=1.0.1',
@@ -111,6 +113,8 @@ extras_require = {
         'jupyter-client==6.1.7',
         'jupyter-core==4.6.3',
         'jupyterlab-pygments==0.1.1',
+        'ipython==7.1.0',
+        'traitlets==4.3.3',
     ],
 	'uwsgi': [
 		'Werkzeug==0.16.1',
@@ -153,6 +157,39 @@ install_requires = [
     'invenio-config>=1.0.3,<1.1.0',
     'invenio-i18n>=1.2.0,<1.3.0',
 ]
+
+class PyTest(TestCommand):
+    """PyTest Test."""
+
+    user_options = [('pytest-args=', 'a', "Arguments to pass to py.test")]
+
+    def initialize_options(self):
+        """Init pytest."""
+        TestCommand.initialize_options(self)
+        self.pytest_args = []
+        try:
+            from ConfigParser import ConfigParser
+        except ImportError:
+            from configparser import ConfigParser
+        config = ConfigParser()
+        config.read('pytest.ini')
+        self.pytest_args = config.get('pytest', 'addopts').split(' ')
+
+    def finalize_options(self):
+        """Finalize pytest."""
+        TestCommand.finalize_options(self)
+        if hasattr(self, '_test_args'):
+            self.test_suite = ''
+        else:
+            self.test_args = []
+            self.test_suite = True
+
+    def run_tests(self):
+        """Run tests."""
+        # import here, cause outside the eggs aren't loaded
+        import pytest
+        errno = pytest.main(self.pytest_args)
+        sys.exit(errno)
 
 packages = find_packages()
 
