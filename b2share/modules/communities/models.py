@@ -195,5 +195,5 @@ def create_community_oaiset(community, fix=False):
 
 __all__ = (
     'Community',
-    'CommunityRole',
+#    'CommunityRole',
 )

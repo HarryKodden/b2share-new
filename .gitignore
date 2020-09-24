@@ -64,4 +64,8 @@ target/
 # Vim swapfiles
 .*.sw?
 
+# Environment & secrets
 .env
+
+# Development Container
+.devcontainer

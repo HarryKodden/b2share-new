@@ -10,10 +10,11 @@
 from __future__ import absolute_import, print_function
 
 import pytest
-from invenio_app.factory import create_ui
 
+from b2share.factory import create_app as b2share_ui
 
 @pytest.fixture(scope='module')
 def create_app():
     """Create test app."""
-    return create_ui
+    return b2share_ui()
+    
