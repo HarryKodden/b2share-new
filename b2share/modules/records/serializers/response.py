@@ -38,6 +38,17 @@ from b2share.modules.deposit.links import deposit_links_factory
 from b2share.modules.deposit.fetchers import b2share_deposit_uuid_fetcher
 
 
+def add_link_header(response, links):
+    """Add a Link HTTP header to a REST response.
+    :param response: REST response instance
+    :param links: Dictionary of links
+    """
+    if links is not None:
+        response.headers.extend({
+            'Link': ', '.join([
+                '<{0}>; rel="{1}"'.format(l, r) for r, l in links.items()])
+        })
+
 def record_responsify(serializer, mimetype):
     """Create a Records-REST response serializer.
 
@@ -60,8 +71,32 @@ def record_responsify(serializer, mimetype):
             link = bucket_link_tpl.format(
                 url_for('invenio_files_rest.bucket_api', bucket_id=bucket.id,
                         _external=True))
-            response.headers.add('Link', link)
+            add_link_header(response, link)
         return response
+    return view
+
+def search_responsify(serializer, mimetype):
+    """Create a Records-REST search result response serializer.
+    :param serializer: Serializer instance.
+    :param mimetype: MIME type of response.
+    :returns: Function that generates a record HTTP response.
+    """
+    def view(pid_fetcher, search_result, code=200, headers=None, links=None,
+             item_links_factory=None):
+        response = current_app.response_class(
+            serializer.serialize_search(pid_fetcher, search_result,
+                                        links=links,
+                                        item_links_factory=item_links_factory),
+            mimetype=mimetype)
+        response.status_code = code
+        if headers is not None:
+            response.headers.extend(headers)
+
+        if links is not None:
+            add_link_header(response, links)
+
+        return response
+
     return view
 
 

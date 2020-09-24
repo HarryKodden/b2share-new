@@ -25,7 +25,6 @@
 
 from __future__ import absolute_import, print_function
 
-from invenio_records_rest.serializers.response import search_responsify
 from invenio_records_rest.serializers.dc import DublinCoreSerializer
 from invenio_records_rest.serializers.datacite import DataCite31Serializer
 
@@ -37,8 +36,8 @@ from b2share.modules.records.serializers.schemas.dc import RecordSchemaDublinCor
 from b2share.modules.records.serializers.schemas.marcxml import RecordSchemaMarcXMLV1
 from b2share.modules.records.serializers.schemas.datacite import DataCiteSchemaV1
 
-from b2share.modules.records.serializers.response import record_responsify, \
-    JSONSerializer
+from b2share.modules.records.serializers.response import \
+    record_responsify, search_responsify, JSONSerializer
 
 json_v1 = JSONSerializer(RecordSchemaJSONV1)
 json_v1_response = record_responsify(json_v1, 'application/json')
