@@ -57,7 +57,7 @@ extras_require = {
         'invenio-records>=1.3.1,<1.4.0',
         'invenio-search-ui>=2.0.0a2,<2.1.0',
 		'invenio_pidrelations>=-1.0.0a6',
-        'invenio-queues-1.0.0a2',
+        'invenio-queues>=1.0.0a2',
 		'invenio-marc21>=1.0.0a9',
 		'jsonresolver==0.2.1',
 		'datacite>=1.0.1',
