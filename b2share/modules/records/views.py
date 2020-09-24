@@ -84,20 +84,17 @@ def verify_record_permission(permission_factory, record, **kwargs):
         abort(403)
 
 
-"""Create Invenio-Records-REST blueprint."""
-blueprint = Blueprint(
-    'b2share_records_rest',
-    __name__,
-    url_prefix='',
-)
-
 def create_blueprint(endpoints):
-    for endpoint, options in (endpoints or {}).items():
-        #print("Endpoint: {}".format(endpoint))
-        #print("- options: {}".format(options))
+    """Create Invenio-Records-REST blueprint."""
+    
+    blueprint = Blueprint(
+        'b2share_records_rest',
+        __name__,
+        url_prefix='',
+    )
 
+    for endpoint, options in (endpoints or {}).items():
         for rule in create_url_rules(endpoint, **options):
-            #print("- rule: {}".format(rule))
             blueprint.add_url_rule(**rule)
 
     # catch record validation errors
