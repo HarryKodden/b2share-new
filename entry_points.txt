@@ -37,6 +37,7 @@ invenio_recods_rest = invenio_records_rest:InvenioRecordsREST
 [invenio_base.blueprints]
 b2share_main = b2share.modules.b2share_main.views:blueprint
 invenio_oauthclient = invenio_oauthclient.views.client:blueprint
+invenio_files_rest = invenio_files_rest.views:blueprint
 
 [invenio_base.api_blueprints]
 invenio_oaiserver = invenio_oaiserver.views.server:blueprint
@@ -44,6 +45,7 @@ b2share_communities = b2share.modules.communities.views:blueprint
 b2share_schemas = b2share.modules.schemas.views:blueprint
 b2share_deposit = b2share.modules.deposit.views:blueprint
 b2share_users = b2share.modules.users.views:blueprint
+invenio_files_rest = invenio_files_rest.views:blueprint
 
 [invenio_db.models]
 b2share_upgrade = b2share.modules.upgrade.models
