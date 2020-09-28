@@ -69,3 +69,4 @@ target/
 
 # Development Container
 .devcontainer
+Pipfile
