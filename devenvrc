@@ -1,0 +1,16 @@
+INVENIO_ACCOUNTS_SESSION_REDIS_URL=redis://localhost:6379/1
+INVENIO_BROKER_URL=amqp://guest:guest@localhost:5672/
+INVENIO_CACHE_REDIS_URL=redis://localhost:6379/0
+INVENIO_CACHE_TYPE=redis
+INVENIO_CELERY_BROKER_URL=amqp://guest:guest@localhost:5672/
+INVENIO_CELERY_RESULT_BACKEND=redis://localhost:6379/2
+ELASTIC_HOSTS=localhost:9200
+INVENIO_SECRET_KEY=CHANGE_ME
+INVENIO_SQLALCHEMY_DATABASE_URI=postgresql+psycopg2://b2share:b2share@localhost/b2share
+INVENIO_WSGI_PROXIES=2
+INVENIO_RATELIMIT_STORAGE_URL=redis://localhost:6379/3
+B2SHARE_UI_PATH=/opt/var/static
+USE_STAGING_B2ACCESS=1
+FLASK_DEBUG=1
+SESSION_COOKIE_SECURE=False
+SQLALCHEMY_DATABASE_URI=postgresql+psycopg2://b2share:b2share@localhost/b2share
