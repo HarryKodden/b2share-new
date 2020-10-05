@@ -262,7 +262,7 @@ def create_url_rules(endpoint, list_route=None, item_route=None,
         dict(rule=item_route + '/abuse', view_func=abuse_view),
         dict(rule=item_route + '/accessrequests', view_func=access_view),
         # Special case for versioning as the parent PID is redirected.
-        dict(rule='/api/records/<pid_value>/versions', view_func=versions_view),
+        dict(rule='/records/<pid_value>/versions', view_func=versions_view),
     ]
 
     if suggesters:
