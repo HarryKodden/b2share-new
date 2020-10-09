@@ -1,0 +1,71 @@
+// For format details, see https://aka.ms/vscode-remote/devcontainer.json or this file's README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.134.0/containers/python-3
+
+{
+	"name": "Python 3",
+	"build": {
+		"dockerfile": "Dockerfile",
+		"context": "..",
+		// Update 'VARIANT' to pick a Python version: 3, 3.6, 3.7, 3.8 
+		"args": { "VARIANT": "3.6" }
+	},
+
+	// Set *default* container specific settings.json values on container create.
+	"settings": {
+		"terminal.integrated.shell.linux": "/bin/bash",
+		"python.pythonPath": "/usr/local/bin/python",
+		"python.linting.enabled": true,
+		"python.linting.pylintEnabled": true,
+		"python.formatting.autopep8Path": "/usr/local/py-utils/bin/autopep8",
+		"python.formatting.blackPath": "/usr/local/py-utils/bin/black",
+		"python.formatting.yapfPath": "/usr/local/py-utils/bin/yapf",
+		"python.linting.banditPath": "/usr/local/py-utils/bin/bandit",
+		"python.linting.flake8Path": "/usr/local/py-utils/bin/flake8",
+		"python.linting.mypyPath": "/usr/local/py-utils/bin/mypy",
+		"python.linting.pycodestylePath": "/usr/local/py-utils/bin/pycodestyle",
+		"python.linting.pydocstylePath": "/usr/local/py-utils/bin/pydocstyle",
+		"python.linting.pylintPath": "/usr/local/py-utils/bin/pylint"
+	},
+
+	// Add the IDs of extensions you want installed when the container is created.
+	"extensions": [
+		"ms-python.python",
+		"ms-python.vscode-pylance"
+	],
+
+	// My environment...
+	"containerEnv": {
+		"INVENIO_CACHE_TYPE": "redis",
+		"INVENIO_CACHE_REDIS_URL": "redis://host.docker.internal:6379/0",
+		"INVENIO_ACCOUNTS_SESSION_REDIS_URL": "redis://host.docker.internal:6379/1",
+		"INVENIO_CELERY_RESULT_BACKEND": "redis://host.docker.internal:6379/2",
+		"INVENIO_RATELIMIT_STORAGE_URL": "redis://host.docker.internal:6379/3",
+		"INVENIO_BROKER_URL": "amqp://guest:guest@host.docker.internal:5672/",
+		"INVENIO_CELERY_BROKER_URL": "amqp://guest:guest@host.docker.internal:5672/",
+		"ELASTIC_HOSTS": "host.docker.internal:9200",
+
+		"INVENIO_SQLALCHEMY_DATABASE_URI": "postgresql+psycopg2://b2share:b2share@host.docker.internal/b2share",
+		"SQLALCHEMY_DATABASE_URI": "postgresql+psycopg2://b2share:b2share@host.docker.internal/b2share",
+
+		"INVENIO_WSGI_PROXIES": "2",
+
+		"B2SHARE_UI_PATH": "/opt/var/static",
+	
+		"USE_STAGING_B2ACCESS": "1",
+		"FLASK_DEBUG": "1",
+		"SESSION_COOKIE_SECURE": "False"
+	},
+
+	"runArgs": [
+        "--env-file", "${localWorkspaceFolder}/.devcontainer/.env"
+	],
+	
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	"forwardPorts": [5000],
+
+	// Use 'postCreateCommand' to run commands after the container is created.
+	"postCreateCommand": "pip install .[all,postgresql,elasticsearch7]",
+
+	// Comment out to connect as root instead.
+	//"remoteUser": "vscode"
+}
