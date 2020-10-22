@@ -56,6 +56,7 @@
 		"SESSION_COOKIE_SECURE": "False"
 	},
 
+	// Add to environment, the secrets values...
 	"runArgs": [
         "--env-file", "${localWorkspaceFolder}/.devcontainer/.env"
 	],
@@ -64,7 +65,7 @@
 	"forwardPorts": [5000],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "pip install .[all,postgresql,elasticsearch7]",
+	"postCreateCommand": "pip install --isolated -e .[all,postgresql,elasticsearch7]",
 
 	// Comment out to connect as root instead.
 	//"remoteUser": "vscode"

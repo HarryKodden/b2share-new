@@ -223,7 +223,7 @@ def login_user(app):
 @pytest.fixture(scope='function')
 def test_communities(app, tmp_location):
     """Load test communities."""
-    from b2share_demo.helpers import load_demo_data
+    from b2share.modules.b2share_demo.helpers import load_demo_data
 
     with app.app_context():
         tmp_location.default = True

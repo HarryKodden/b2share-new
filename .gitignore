@@ -68,5 +68,4 @@ target/
 .env
 
 # Development Container
-.devcontainer
 Pipfile

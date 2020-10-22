@@ -156,7 +156,7 @@ SESSION_COOKIE_SECURE = (os.environ.get('SESSION_COOKIE_SECURE', "True").upper()
 #: should be set to the correct host and it is strongly recommended to only
 #: route correct hosts to the application.
 APP_ALLOWED_HOSTS = [ os.environ.get("SERVER_NAME", 'localhost'), os.environ.get("SERVER_INTERNAL_IP", '127.0.0.1') ]
-
+APP_ALLOWED_HOSTS = None
 # OAI-PMH
 # =======
 OAISERVER_ID_PREFIX = 'oai:b2share.eudat.eu:'

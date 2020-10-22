@@ -96,7 +96,7 @@ COPY --from=build-deps /opt/node_modules/react-widgets/dist/img/* b2share/module
 COPY --from=build-deps /tmp/public-license-selector/dist/license-selector.* b2share/modules/b2share_main/static/vendors/
 
 RUN pip install --upgrade pip
-RUN pip install -e .[all,postgresql,elasticsearch7]
+RUN pip install .[all,postgresql,elasticsearch7]
 
 # Optional for debugging....
 RUN pip install flask_DebugToolBar
