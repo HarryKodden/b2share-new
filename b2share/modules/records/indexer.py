@@ -24,8 +24,9 @@
 """Record modification prior to indexing."""
 
 import pytz
-
-from invenio_search import current_search_client
+from b2share.modules.access.policies import allow_public_file_metadata
+from b2share.modules.records.fetchers import b2share_parent_pid_fetcher, \
+    b2share_record_uuid_fetcher
 from invenio_records_files.models import RecordsBuckets
 from invenio_pidrelations.contrib.versioning import PIDNodeVersioning
 
@@ -35,17 +36,10 @@ from .providers import RecordUUIDProvider
 
 def record_to_index(record):
     """Route the given record to the right index and document type."""
-
-    def doc_type(alias):
-        try:
-            return list(current_search_client.indices.get_alias(index=alias, ignore=[404]).keys())[0]
-        except:
-            return alias
-
     if is_deposit(record.model):
-        return 'record', doc_type('records')
+        return 'deposits', 'deposits'
     elif is_publication(record.model):
-        return 'deposit', doc_type('deposits')
+        return 'records', 'records'
     else:
         raise ValueError('Invalid record. It is neither a deposit'
                          ' nor a publication')
@@ -54,9 +48,6 @@ def record_to_index(record):
 def indexer_receiver(sender, json=None, record=None, index=None,
                      **dummy_kwargs):
     """Connect to before_record_index signal to transform record for ES."""
-
-    from b2share.modules.access.policies import allow_public_file_metadata
-    from b2share.modules.records.fetchers import b2share_parent_pid_fetcher, b2share_record_uuid_fetcher
 
     if 'external_pids' in json['_deposit']:
         # Keep the 'external_pids' if the record is a draft (deposit) or
