@@ -24,7 +24,8 @@
 """B2Share Records JSON schemas used for serialization."""
 
 from flask import g, current_app
-from marshmallow import Schema, fields, pre_dump
+from invenio_rest.serializer import BaseSchema as Schema
+from marshmallow import fields, pre_dump
 from b2share.modules.access.policies import allow_public_file_metadata
 from b2share.modules.files.permissions import files_permission_factory
 from b2share.modules.records.utils import is_deposit
@@ -45,7 +46,7 @@ class DraftSchemaJSONV1(Schema):
     files = fields.Raw()
 
     @pre_dump
-    def filter_internal(self, data):
+    def filter_internal(self, data, **kwargs):
         """Remove internal fields from the record metadata."""
         external_pids = []
         bucket = None

@@ -33,7 +33,7 @@ def versions_url(pid_value):
                    pid_value=pid_value, _external=True)
 
 
-def deposit_links_factory(pid):
+def deposit_links_factory(pid, **kwargs):
     """Factory for record links generation."""
 
     from b2share.modules.records.providers import RecordUUIDProvider

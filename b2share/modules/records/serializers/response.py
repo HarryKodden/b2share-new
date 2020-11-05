@@ -71,7 +71,7 @@ def record_responsify(serializer, mimetype):
             link = bucket_link_tpl.format(
                 url_for('invenio_files_rest.bucket_api', bucket_id=bucket.id,
                         _external=True))
-            add_link_header(response, link)
+            response.headers.add('Link', link)
         return response
     return view
 
