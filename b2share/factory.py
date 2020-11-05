@@ -35,12 +35,12 @@ invenio_config_loader = create_config_loader(
 
 @app_created.connect
 def receiver_app_created(sender, app=None, **kwargs):
-    app.logger.info("Application created")
+    app.logger.debug("Application created")
 
 @app_loaded.connect
 def receiver_app_loaded(sender, app=None, **kwargs):
-    app.logger.info("Application Loaded")
-    app.logger.info("Instance Path: {}".format(app.instance_path))
+    app.logger.debug("Application Loaded")
+    app.logger.debug("Instance Path: {}".format(app.instance_path))
     check_configuration(app.config, app.logger)
 
 def instance_path():

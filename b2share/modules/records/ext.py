@@ -55,12 +55,6 @@ class B2ShareRecords(object):
             self.init_app(app)
 
     def init_app(self, app):
-        self._register_signals(app)
-        app.cli.add_command(b2records)
-        register_triggers(app)
-        register_error_handlers(app)
-
-    def init_app(self, app):
         """Flask application initialization."""
         self.init_config(app)
         app.extensions['b2share-records'] = self
@@ -69,14 +63,14 @@ class B2ShareRecords(object):
         register_triggers(app)
         register_error_handlers(app)
 
-        app.logger.info("Creating enpoints...")
-
         # Register records API blueprints
-        endpoints = app.config['B2SHARE_RECORDS_REST_ENDPOINTS']
-        #for i in endpoints:
-        #    app.logger.info("- Creating enpoint: {}".format(i))
 
-        app.register_blueprint(create_blueprint(endpoints))
+        endpoints_config = 'B2SHARE_RECORDS_REST_ENDPOINTS'
+        endpoints = app.config.get(endpoints_config, None)
+        if not endpoints:
+            app.logger.error("Missing: "+endpoints_config)
+        else:
+            app.register_blueprint(create_blueprint(endpoints))
 
         @app.before_first_request
         def extend_default_endpoint_prefixes():
