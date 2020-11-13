@@ -158,7 +158,7 @@ install_requires = [
     'invenio[base, auth, metadata, files, postgresql, elasticsearch7]>=3.3.0,<3.4.0',
     'easywebdav2>=-1.3.0',
     'b2handle>=1.1.2',
-    'invenio-pidrelations==v1.0.0a7',
+    'invenio-pidrelations==v1.0.0a4',
     'datacite>=1.0.1',
     'dcxml>=0.1.2',
     'invenio-marc21>=1.0.0a9', # possible problem, pin to <1.0.0a9
@@ -183,7 +183,9 @@ install_requires = [
     'SQLAlchemy-Utils[encrypted]<0.36.0,>=0.33.0',
     # 'invenio-config>=1.0.3,<1.1.0',
     # 'invenio-i18n>=1.2.0,<1.3.0',
-    'marshmallow==3.3.0'
+    'marshmallow==3.3.0',
+    'requests==2.24.0',
+    'responses==0.11.0'
 ]
 
 class PyTest(TestCommand):

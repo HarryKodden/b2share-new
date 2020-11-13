@@ -66,6 +66,11 @@ def test_deposit_create(app, test_records_data, test_users, login_user):
     # test creating a deposit with a logged in user
     with app.app_context():
         with app.test_client() as client:
+
+            def compare(a,b):
+                json.dumps(a, indent=4, sort_keys=True) == json.dumps(b, indent=4, sort_keys=True)
+                return a == b
+                
             user = test_users['normal']
             login_user(user, client)
             # create the deposit
@@ -82,7 +87,9 @@ def test_deposit_create(app, test_records_data, test_users, login_user):
                     PID=draft_create_data['metadata'].get('ePIC_PID'),
                     DOI=draft_create_data['metadata'].get('DOI'),
                 )
-                assert expected_metadata == draft_create_data['metadata']
+
+                compare(expected_metadata, draft_create_data['metadata'])
+
                 subtest_self_link(draft_create_data,
                                   draft_create_res.headers,
                                   client)

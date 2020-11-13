@@ -26,21 +26,12 @@
 
 from __future__ import absolute_import, print_function
 
-
-from __future__ import absolute_import, print_function
-
-from invenio_files_rest.signals import file_deleted, file_uploaded
-from invenio_indexer.signals import before_record_index
-
-from . import indexer
-from . tasks import update_record_files_async
-from . triggers import register_triggers
-from . errors import register_error_handlers
-
 from invenio_records_rest.utils import PIDConverter
 from invenio_indexer.signals import before_record_index
 from invenio_records_rest import utils
 
+from .triggers import register_triggers
+from .errors import register_error_handlers
 from .views import create_blueprint
 from .indexer import indexer_receiver
 from .cli import b2records
@@ -57,28 +48,19 @@ class B2ShareRecords(object):
     def init_app(self, app):
         """Flask application initialization."""
         self.init_config(app)
-        app.extensions['b2share-records'] = self
-        self._register_signals(app)
         app.cli.add_command(b2records)
+        app.extensions['b2share-records'] = self
         register_triggers(app)
         register_error_handlers(app)
 
         # Register records API blueprints
-
-        endpoints_config = 'B2SHARE_RECORDS_REST_ENDPOINTS'
-        endpoints = app.config.get(endpoints_config, None)
-        if not endpoints:
-            app.logger.error("Missing: "+endpoints_config)
-        else:
-            app.register_blueprint(create_blueprint(endpoints))
+        endpoints = app.config['B2SHARE_RECORDS_REST_ENDPOINTS']
+        app.register_blueprint(create_blueprint(endpoints))
 
         @app.before_first_request
         def extend_default_endpoint_prefixes():
             """Fix the endpoint prefixes as ."""
-
             endpoint_prefixes = utils.build_default_endpoint_prefixes(endpoints)
-            #app.logger.info("- Fixing endpoint: {}".format(endpoint_prefixes))
-
             current_records_rest = app.extensions['invenio-records-rest']
             current_records_rest.default_endpoint_prefixes.update(
                 endpoint_prefixes
@@ -89,14 +71,5 @@ class B2ShareRecords(object):
 
 
     def init_config(self, app):
+        """Initialize configuration."""
         pass
-
-    def _register_signals(self, app):
-        """Register signals."""
-        before_record_index.dynamic_connect(
-            indexer.indexer_receiver,
-            sender=app,
-            index="records-record-v1.0.0")
-
-        file_deleted.connect(update_record_files_async, weak=False)
-        file_uploaded.connect(update_record_files_async, weak=False)

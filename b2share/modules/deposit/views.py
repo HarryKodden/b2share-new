@@ -38,7 +38,6 @@ from invenio_records_rest.views import RecordResource, pass_record
 from invenio_records_rest.views import verify_record_permission
 from invenio_deposit.search import DepositSearch
 from invenio_indexer.api import RecordIndexer
-from invenio_pidrelations.contrib.versioning import PIDNodeVersioning
 from invenio_pidstore.models import PIDStatus
 
 current_jsonschemas = LocalProxy(

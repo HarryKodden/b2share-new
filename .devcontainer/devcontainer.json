@@ -65,7 +65,7 @@
 	"forwardPorts": [5000],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "pip install --isolated -e .[all,postgresql,elasticsearch7]",
+	"postCreateCommand": "python -m pip install pip --upgrade; pip install --isolated -e .[all,postgresql,elasticsearch7]",
 
 	// Comment out to connect as root instead.
 	//"remoteUser": "vscode"
