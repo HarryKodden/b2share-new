@@ -51,6 +51,7 @@ class DraftSchemaJSONV1(Schema):
         external_pids = []
         bucket = None
         record = None
+
         # differentiating between search results and
         # single record requests
         if hasattr(g, 'record'):

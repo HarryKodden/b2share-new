@@ -95,10 +95,10 @@ def base_app():
         SECURITY_PASSWORD_SALT='CHANGEME',
         # register flask_security endpoints for testing purpose.
         ACCOUNTS_REGISTER_BLUEPRINT=True,
-        CELERY_ALWAYS_EAGER=True,
+        CELERY_ALWAYS_TASK_EAGER=True,
         CELERY_RESULT_BACKEND="cache",
         CELERY_CACHE_BACKEND="memory",
-        CELERY_EAGER_PROPAGATES_EXCEPTIONS=True,
+        CELERY_TASK_EAGER_PROPAGATES=True,
         SUPPORT_EMAIL='support@eudat.eu',
         PREFERRED_URL_SCHEME='https',
         FILES_REST_STORAGE_FACTORY='b2share.modules.files.storage.b2share_storage_factory',

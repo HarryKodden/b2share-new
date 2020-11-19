@@ -26,7 +26,7 @@
 from __future__ import absolute_import, print_function
 
 from invenio_records_rest.serializers.dc import DublinCoreSerializer
-from invenio_records_rest.serializers.datacite import DataCite31Serializer
+from invenio_records_rest.serializers.datacite import DataCite31Serializer as InvenioDataCite31Serializer
 
 from dojson.contrib.to_marc21 import to_marc21
 from invenio_marc21.serializers.marcxml import MARCXMLSerializer
@@ -49,6 +49,14 @@ dc_v1 = DublinCoreSerializer(RecordSchemaDublinCoreV1, replace_refs=True)
 marcxml_v1 = MARCXMLSerializer(to_marc21, schema_class=RecordSchemaMarcXMLV1, replace_refs=True)
 oaipmh_oai_dc = dc_v1.serialize_oaipmh
 oaipmh_marc21_v1 = marcxml_v1.serialize_oaipmh
+
+class DataCite31Serializer(InvenioDataCite31Serializer):
+    """ Subclassing invenio DataCite31Serializer to overrule method marshmallow dump """
+
+    def dump(self, obj, context=None):
+        """Serialize object with schema."""
+        return self.schema_class(context=context).dump(obj)
+
 
 # DOI record serializers.
 datacite_v31 = DataCite31Serializer(DataCiteSchemaV1, replace_refs=True)

@@ -34,7 +34,9 @@ from flask import url_for, g, current_app
 from flask_login import current_user
 from jsonschema.validators import validator_for, validate as validate_schema
 from jsonschema.exceptions import ValidationError
-
+from b2share.modules.schemas.api import CommunitySchema
+from b2share.modules.deposit.minters import b2share_deposit_uuid_minter
+from b2share.modules.deposit.fetchers import b2share_deposit_uuid_fetcher
 from jsonpatch import apply_patch
 
 from invenio_db import db
@@ -44,7 +46,6 @@ from invenio_records_files.api import Record
 from invenio_records_files.models import RecordsBuckets
 from invenio_records.errors import MissingModelError
 from invenio_indexer.api import RecordIndexer
-#from invenio_pidrelations.contrib.versioning import PIDNodeVersioning
 from invenio_pidrelations.contrib.versioning import PIDVersioning
 from invenio_pidstore.models import PersistentIdentifier, PIDStatus
 from invenio_pidstore.resolver import Resolver
@@ -56,10 +57,22 @@ from .errors import (InvalidDepositError,
                      DraftExistsVersioningError,
                      IncorrectRecordVersioningError,
                      RecordNotFoundVersioningError)
+from b2share.modules.communities.api import Community
+from b2share.modules.communities.errors import CommunityDoesNotExistError
+from b2share.modules.communities.workflows import publication_workflows
+from b2share.modules.records.api import B2ShareRecord
+from b2share.modules.records.errors import InvalidRecordError
+from b2share.modules.records.utils import is_publication
+from b2share.modules.records.providers import RecordUUIDProvider
+from b2share.modules.access.policies import is_under_embargo
+from b2share.modules.schemas.errors import CommunitySchemaDoesNotExistError
+from b2share.modules.schemas.api import CommunitySchema
+from b2share.modules.deposit.minters import b2share_deposit_uuid_minter
+from b2share.modules.deposit.fetchers import b2share_deposit_uuid_fetcher
+from b2share.modules.deposit.providers import DepositUUIDProvider
+from b2share.modules.handle.proxies import current_handle
+from b2share.modules.handle.errors import EpicPIDError
 
-from .minters import b2share_deposit_uuid_minter
-from .fetchers import b2share_deposit_uuid_fetcher
-from .providers import DepositUUIDProvider
 
 class PublicationStates(Enum):
     """States of a record."""
@@ -70,18 +83,6 @@ class PublicationStates(Enum):
     published = 3
     """Deposit is published."""
 
-def generate_external_pids(record):
-    """Generate the list of external files of a record sorted by key."""
-    external_pids = []
-    current_file_keys = [f for f in record.files if
-                         f.obj.file.storage_class == 'B']
-    current_file_keys.sort(key=lambda f: f.obj.key)
-    for f in current_file_keys:
-        external_pids.append({'key': f.obj.key,
-                              'ePIC_PID': f.obj.file.uri})
-    return external_pids
-
-from .. records.api import B2ShareRecord
 
 class Deposit(InvenioDeposit):
     """B2Share Deposit API."""
@@ -161,7 +162,6 @@ class Deposit(InvenioDeposit):
     @property
     def versioning(self):
         """Return the parent versionning PID."""
-        #return PIDNodeVersioning(pid=self.record_pid)
         return PIDVersioning(child=self.record_pid)
 
     @classmethod
@@ -173,10 +173,6 @@ class Deposit(InvenioDeposit):
         is provided the new record will be a copy of this record. Note: this
         PID must reference the current last version of a record.
         """
-
-        from b2share.modules.schemas.errors import CommunitySchemaDoesNotExistError
-        from b2share.modules.schemas.api import CommunitySchema
-        from b2share.modules.records.providers import RecordUUIDProvider
 
         # check that the status field is not set
         if 'publication_state' in data:
@@ -214,14 +210,11 @@ class Deposit(InvenioDeposit):
         else:
             # create parent PID
             parent_pid = RecordUUIDProvider.create().pid
-            #version_master = PIDNodeVersioning(pid=parent_pid)
             version_master = PIDVersioning(parent=parent_pid)
-            #version_master.insert_draft_child(child_pid=rec_pid)
-            version_master.insert_draft_child(rec_pid)
+            version_master.insert_draft_child(child=rec_pid)
 
         # Mint the deposit with the parent PID
         data['_pid'] = [{
-            #'value': version_master.pid.pid_value,
             'value': version_master.parent.pid_value,
             'type': RecordUUIDProvider.parent_pid_type,
         }]
@@ -233,7 +226,6 @@ class Deposit(InvenioDeposit):
         except ValueError as e:
             raise InvalidDepositError(
                 'Community ID is not a valid UUID.') from e
-
         try:
             schema = CommunitySchema.get_community_schema(community_id)
         except CommunitySchemaDoesNotExistError as e:
@@ -249,6 +241,31 @@ class Deposit(InvenioDeposit):
                 schema,
                 _external=True
             )
+
+        # prepopulate required boolean fields with false
+        if not version_of:
+            from b2share.modules.schemas.api import BlockSchema
+            import json
+            community_schema = json.loads(schema.community_schema)
+            if 'required' in community_schema:
+                bs_id = json.loads(schema.community_schema)['required'][0]
+                bs = BlockSchema.get_block_schema(bs_id)
+                bs_version = bs.versions[len(bs.versions) - 1]
+                schema_dict = json.loads(bs_version.json_schema)
+                required = []
+                if 'required' in schema_dict:
+                    required = schema_dict['required']
+                properties = {}
+                if 'properties' in schema_dict:
+                    properties = schema_dict['properties']
+                try:
+                    community_metadata = data['community_specific'][bs_id]
+                except KeyError:
+                    community_metadata = {}
+                for key in required:
+                    if properties[key]['type'] == 'boolean' and not key in community_metadata:
+                        community_metadata[key] = False
+                data['community_specific'] = {bs_id: community_metadata}
 
         # create file bucket
         if prev_version and prev_version.files:
@@ -278,8 +295,6 @@ class Deposit(InvenioDeposit):
         data['publication_state'] = PublicationStates.draft.name
 
     def validate(self, **kwargs):
-        from b2share.modules.schemas.api import CommunitySchema
-
         if ('publication_state' in self and
                 self['publication_state'] == PublicationStates.draft.name):
             if 'community' not in self:
@@ -312,9 +327,6 @@ class Deposit(InvenioDeposit):
         This method extends the default implementation by publishing the
         deposition when 'publication_state' is set to 'published'.
         """
-
-        from b2share.modules.records.providers import RecordUUIDProvider
-
         if 'external_pids' in self:
             deposit_id = self['_deposit']['id']
             recid = PersistentIdentifier.query.filter_by(
@@ -351,18 +363,11 @@ class Deposit(InvenioDeposit):
             raise MissingModelError()
 
         # automatically make embargoed records private
-
         if self.get('embargo_date') and self.get('open_access'):
-            from b2share.modules.access.policies import is_under_embargo
-
             if is_under_embargo(self):
                 self['open_access'] = False
 
         if 'community' in self:
-            from b2share.modules.communities.api import Community
-            from b2share.modules.communities.errors import CommunityDoesNotExistError
-            from b2share.modules.communities.workflows import publication_workflows
-
             try:
                 community = Community.get(self['community'])
             except CommunityDoesNotExistError as e:
@@ -378,9 +383,6 @@ class Deposit(InvenioDeposit):
 
             # Retrieve previous version in order to reindex it later.
             previous_version_pid = None
-            #parent_pid = self.versioning.parents.first()
-            #version_master = PIDNodeVersioning(pid=parent_pid)
-            
             # Save the previous "last" version for later use
             if self.versioning.parent.status == PIDStatus.REDIRECTED and \
                     self.versioning.has_children:
@@ -424,13 +426,9 @@ class Deposit(InvenioDeposit):
 
     def delete(self):
         """Delete a deposit."""
-
-        from b2share.modules.records.providers import RecordUUIDProvider
-
         deposit_pid = self.pid
         pid_value = deposit_pid.pid_value
         record_pid = RecordUUIDProvider.get(pid_value).pid
-        #version_master = PIDNodeVersioning(child=record_pid)
         version_master = PIDVersioning(child=record_pid)
         # every deposit has a parent version after the 2.1.0 upgrade
         # except deleted ones. We check the parent version in case of a delete
@@ -475,9 +473,6 @@ def create_file_pids(record_metadata):
                            bucket_id=f.get('bucket'), key=f.get('key'),
                            _external=True)
         try:
-            from b2share.modules.handle.proxies import current_handle
-            from b2share.modules.handle.errors import EpicPIDError
-
             file_pid = current_handle.create_handle(
                 file_url, checksum=f.get('checksum'), fixed=True
             )
@@ -539,15 +534,10 @@ def create_b2safe_file(external_pids, bucket):
 
 
 def find_version_master_and_previous_record(version_of):
-    #"""Retrieve the PIDNodeVersioning and previous record of a record PID.
     """Retrieve the PIDVersioning and previous record of a record PID.
 
     :params version_of: record PID.
     """
-
-    from b2share.modules.records.providers import RecordUUIDProvider
-    from b2share.modules.records.utils import is_publication
-
     try:
         child_pid = RecordUUIDProvider.get(version_of).pid
         if child_pid.status == PIDStatus.DELETED:
@@ -555,8 +545,6 @@ def find_version_master_and_previous_record(version_of):
     except PIDDoesNotExistError as e:
         raise RecordNotFoundVersioningError() from e
 
-    #parent_pid = PIDNodeVersioning(pid=child_pid).parents.first()
-    #version_master = PIDNodeVersioning(pid=parent_pid)
     version_master = PIDVersioning(child=child_pid)
 
     prev_pid = version_master.last_child
@@ -586,6 +574,18 @@ def copy_data_from_previous(previous_record):
         copied_data['_deposit'] = {'external_pids': external_pids}
         copied_data['_files'] = files
     return copied_data
+
+
+def generate_external_pids(record):
+    """Generate the list of external files of a record sorted by key."""
+    external_pids = []
+    current_file_keys = [f for f in record.files if
+                         f.obj.file.storage_class == 'B']
+    current_file_keys.sort(key=lambda f: f.obj.key)
+    for f in current_file_keys:
+        external_pids.append({'key': f.obj.key,
+                              'ePIC_PID': f.obj.file.uri})
+    return external_pids
 
 
 copy_data_from_previous.extra_removed_fields = [

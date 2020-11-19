@@ -183,7 +183,6 @@ install_requires = [
     'SQLAlchemy-Utils[encrypted]<0.36.0,>=0.33.0',
     # 'invenio-config>=1.0.3,<1.1.0',
     # 'invenio-i18n>=1.2.0,<1.3.0',
-    'marshmallow==3.3.0',
     'requests==2.24.0',
     'responses==0.11.0'
 ]
