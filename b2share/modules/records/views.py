@@ -34,7 +34,6 @@ from invenio_db import db
 from invenio_pidstore.resolver import Resolver
 from invenio_pidstore.errors import PIDDoesNotExistError, PIDRedirectedError
 from invenio_pidstore.models import PersistentIdentifier
-#from invenio_pidrelations.contrib.versioning import PIDNodeVersioning
 from invenio_pidrelations.contrib.versioning import PIDVersioning
 from invenio_pidrelations.models import PIDRelation
 from invenio_records_files.api import Record
@@ -50,7 +49,6 @@ from invenio_records_rest.views import (pass_record,
 from invenio_records_rest.links import default_links_factory
 from invenio_records_rest.query import default_search_factory
 from invenio_records_rest.utils import obj_or_import_string
-
 from invenio_mail.tasks import send_email
 from invenio_rest import ContentNegotiatedMethodView
 from invenio_accounts.models import User
@@ -406,7 +404,6 @@ class RecordsVersionsResource(ContentNegotiatedMethodView):
 
         pid_value = request.view_args['pid_value']
         pid = RecordUUIDProvider.get(pid_value).pid
-        #pid_versioning = PIDNodeVersioning(child=pid)
         pid_versioning = PIDVersioning(child=pid)
         if pid_versioning.is_child:
             # This is a record PID. Retrieve the parent versioning PID.
@@ -527,7 +524,6 @@ class RequestAccessResource(ContentNegotiatedMethodView):
 
         :param resolver: Persistent identifier resolver instance.
         """
-        
         default_media_type = 'application/json'
         super(RequestAccessResource, self).__init__(
             serializers={
