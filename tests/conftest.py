@@ -36,11 +36,10 @@ from contextlib import contextmanager
 from copy import deepcopy
 from collections import namedtuple
 
-from flask.cli import ScriptInfo
 import pytest
 import responses
 from jsonpatch import apply_patch
-from b2share_unit_tests.helpers import authenticated_user, create_user
+from tests.b2share_unit_tests.helpers import authenticated_user, create_user
 from b2share.modules.deposit.api import Deposit as B2ShareDeposit
 from b2share.modules.schemas.helpers import load_root_schemas
 from b2share.modules.b2share_demo.helpers import resolve_community_id, resolve_block_schema_id
@@ -74,6 +73,9 @@ sys.path.append(os.path.dirname(__file__))
 def base_app():
     """Base uninitialized flask application fixture."""
     from b2share.factory import create_api
+
+    for k,v in os.environ.items():
+        print("ENV: {} --> {}".format(k,v))
 
     instance_path = tempfile.mkdtemp()
     os.environ.update(

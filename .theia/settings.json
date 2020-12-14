@@ -1,0 +1,11 @@
+{
+    "python.testing.unittestEnabled": false,
+    "python.testing.nosetestsEnabled": false,
+    "python.testing.pytestEnabled": true,
+    "python.disableInstallationCheck": true,
+    "python.envFile": "${workspaceFolder}/.env",
+    "python.testing.cwd": "${workspaceFolder}",
+    "python.testing.pytestArgs": [
+          "tests"
+    ]
+}
