@@ -7,7 +7,7 @@ authors = ["Harry Kodden <harry@kodden.nl>"]
 [tool.poetry.dependencies]
 python = ">=3.6,<3.8"
 invenio = ">=3.3.0,<3.4.0"
-invenio-assets = "<1.2.0,>=1.1.3"
+invenio-assets = ">=1.2.2"
 invenio-pidrelations = "v1.0.0a4"
 invenio-oauth2server = "<1.3.0,>=1.2.0"
 invenio-records-rest = "<1.8.0,>=1.7.1"
@@ -38,6 +38,8 @@ zope = ">=5.1"
 Flask-Testing = "^0.8.0"
 psycopg2-binary = "^2.8.6"
 importlib = "^1.0.4"
+invenio-i18n = ">=1.3.0a1"
+invenio-theme = "^1.3.4"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.1.2"
