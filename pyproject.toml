@@ -39,8 +39,8 @@ zope = ">=5.1"
 Flask-Testing = "^0.8.0"
 psycopg2-binary = "^2.8.6"
 importlib = "^1.0.4"
-httplib2 = "^0.18.1"
-responses = "^0.12.1"
+invenio-i18n = ">=1.3.0a1"
+invenio-theme = "^1.3.4"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.1.2"
