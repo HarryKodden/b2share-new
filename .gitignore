@@ -73,3 +73,6 @@ target/
 # Development Container
 Pipfile
 poetry.lock
+requirements.txt
+settings.json
+launch.json
