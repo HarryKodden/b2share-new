@@ -23,7 +23,7 @@ from celery.schedules import crontab
 from flask import request
 
 from invenio_app.config import APP_DEFAULT_SECURE_HEADERS
-from invenio_previewer.config import PREVIEWER_PREFERENCE as BASE_PREFERENCE
+# from invenio_previewer.config import PREVIEWER_PREFERENCE as BASE_PREFERENCE
 from invenio_records_rest.utils import deny_all, allow_all
 
 from b2share.modules.oauthclient.b2access import make_b2access_remote_app
@@ -164,7 +164,7 @@ OAISERVER_ID_PREFIX = 'oai:b2share.eudat.eu:'
 # Previewers
 # ==========
 #: Include IIIF preview for images.
-PREVIEWER_PREFERENCE = ['iiif_image'] + BASE_PREFERENCE
+# PREVIEWER_PREFERENCE = ['iiif_image'] + BASE_PREFERENCE
 
 # Debug
 # =====
