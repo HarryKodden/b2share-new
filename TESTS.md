@@ -41,6 +41,7 @@ poetry update
 Make sure you have have .vscode/settings.json and .vscode/lauch.json in proper shape:
 
 .vscode/settings.json
+
 ```
 { 
   "python.testing.unittestEnabled": false,
@@ -56,6 +57,7 @@ Make sure you have have .vscode/settings.json and .vscode/lauch.json in proper s
 ```
 
 .vscode/launch.json
+
 ```
 {
     // Use IntelliSense to learn about possible attributes.
@@ -64,13 +66,14 @@ Make sure you have have .vscode/settings.json and .vscode/lauch.json in proper s
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: Current File",
+            "name": "Python tests...",
             "type": "python",
-            "request": "launch",
-            "program": "${file}",
-            "console": "integratedTerminal"
+            "request": "test",
+            "console": "externalTerminal",
+            "justMyCode": false,
+            "stopOnEntry": true,
+            "envFile": "${workspaceFolder}/.env"
         }
     ]
 }
 ```
-

@@ -69,13 +69,13 @@ sys.path.append(
 sys.path.append(os.path.dirname(__file__))
 
 
-@pytest.yield_fixture(scope='session')
+@pytest.fixture(scope='session')
 def base_app():
     """Base uninitialized flask application fixture."""
     from b2share.factory import create_api
 
-    for k,v in os.environ.items():
-        print("ENV: {} --> {}".format(k,v))
+#   for k,v in os.environ.items():
+#       print("ENV: {} --> {}".format(k,v))
 
     instance_path = tempfile.mkdtemp()
     os.environ.update(
