@@ -200,6 +200,9 @@ def create_url_rules(endpoint, list_route=None, item_route=None,
                         getter=partial(record_class.get_record,
                                        with_deleted=True))
 
+    # import deposit here in order to avoid dependency loop
+    from b2share.modules.deposit.api import Deposit
+
     list_view = B2ShareRecordsListResource.as_view(
         RecordsListResource.view_name.format(endpoint),
         resolver=resolver,

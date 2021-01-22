@@ -25,20 +25,24 @@
 from functools import partial
 
 from flask import abort, Blueprint, current_app, g, request
-from werkzeug.local import LocalProxy
-
 from invenio_files_rest.errors import InvalidOperationError
 from invenio_pidstore.errors import PIDInvalidAction
-from invenio_pidstore.resolver import Resolver
+#from invenio_pidstore.resolver import Resolver
+from .resolver import Resolver
 from invenio_db import db
 from invenio_records_rest.utils import obj_or_import_string
 from invenio_rest.views import create_api_errorhandler
+from werkzeug.local import LocalProxy
 from invenio_records_rest.links import default_links_factory
 from invenio_records_rest.views import RecordResource, pass_record
 from invenio_records_rest.views import verify_record_permission
 from invenio_deposit.search import DepositSearch
 from invenio_indexer.api import RecordIndexer
+from invenio_pidrelations.contrib.versioning import PIDVersioning
 from invenio_pidstore.models import PIDStatus
+from b2share.modules.deposit.api import Deposit
+from b2share.modules.records.providers import RecordUUIDProvider
+
 
 current_jsonschemas = LocalProxy(
     lambda: current_app.extensions['invenio-jsonschemas']
@@ -144,21 +148,21 @@ def records_rest_url_rules(endpoint, list_route=None, item_route=None,
     ]
 
 
-"""Create Invenio-Deposit-REST blueprint."""
-blueprint = Blueprint(
-'b2share_deposit_rest',
-    __name__,
-    url_prefix='',
-)
-
-
 def create_blueprint(endpoints):
+    """Create Invenio-Deposit-REST blueprint."""
+    blueprint = Blueprint(
+        'b2share_deposit_rest',
+        __name__,
+        url_prefix='',
+    )
     blueprint.errorhandler(PIDInvalidAction)(create_api_errorhandler(
         status=403, message='Invalid action'
     ))
     blueprint.errorhandler(InvalidOperationError)(create_api_errorhandler(
         status=403, message='Invalid operation'
     ))
+
+    print("Create BluePrints...")
 
     for endpoint, options in (endpoints or {}).items():
         for rule in records_rest_url_rules(endpoint, **options):
@@ -170,11 +174,14 @@ def create_blueprint(endpoints):
 class DepositResource(RecordResource):
     """Resource for deposit items."""
 
+    def __init__(self, *args, **kwargs):
+        print("DepositResourece !!!", args, kwargs)
+        super(DepositResource, self).__init__(*args, **kwargs)
+
     def patch(self, *args, **kwargs):
         """PATCH the deposit."""
 
-        from b2share.modules.deposit.api import Deposit
-
+        print("DepositResource...")
         pid, record = request.view_args['pid_value'].data
         result = super(DepositResource, self).patch(*args, **kwargs)
         record = Deposit.get_record(record['_deposit']['id'])

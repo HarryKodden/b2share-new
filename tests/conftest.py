@@ -117,7 +117,7 @@ def base_app():
     shutil.rmtree(instance_path)
 
 
-@pytest.yield_fixture(scope='function')
+@pytest.fixture(scope='function')
 def clean_app(request, base_app):
     """Application with database and elasticsearch cleaned."""
     with base_app.app_context():
@@ -507,7 +507,7 @@ def test_records(app, request, test_records_data, test_users):
         return result
 
 
-@pytest.yield_fixture()
+@pytest.fixture()
 def tmp_location(app):
     """File system location."""
     with app.app_context():
@@ -526,7 +526,7 @@ def tmp_location(app):
     shutil.rmtree(tmppath)
 
 
-@pytest.yield_fixture
+@pytest.fixture
 def flask_http_responses(app):
     """Routes HTTP requests to the given flask application.
 
