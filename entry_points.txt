@@ -45,7 +45,7 @@ invenio_oaiserver = invenio_oaiserver.views.server:blueprint
 b2share_apiroot = b2share.modules.apiroot.views:blueprint
 b2share_communities = b2share.modules.communities.views:blueprint
 b2share_schemas = b2share.modules.schemas.views:blueprint
-b2share_deposit = b2share.modules.deposit.views:blueprint
+#b2share_deposit = b2share.modules.deposit.views:blueprint
 b2share_users = b2share.modules.users.views:blueprint
 invenio_files_rest = invenio_files_rest.views:blueprint
 

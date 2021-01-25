@@ -31,11 +31,12 @@ from invenio_records.models import RecordMetadata
 from invenio_records_files.models import RecordsBuckets
 from invenio_records.api import Record
 from invenio_indexer.api import RecordIndexer
-#from invenio_pidrelations.contrib.versioning import PIDNodeVersioning
 from invenio_pidrelations.contrib.versioning import PIDVersioning
 from invenio_records_files.api import Record, FilesIterator, FileObject
 from invenio_records_files.utils import sorted_files_from_bucket
 from invenio_files_rest.models import Bucket, ObjectVersion, FileInstance
+
+from b2share.modules.deposit.providers import DepositUUIDProvider
 
 from .fetchers import b2share_record_uuid_fetcher
 
@@ -74,9 +75,10 @@ class B2ShareRecord(Record):
     def delete(self, **kwargs):
         """Delete a record."""
         from b2share.modules.deposit.api import Deposit
-        from b2share.modules.deposit.providers import DepositUUIDProvider
 
         pid = self.pid
+
+        print("PID: ", pid)
         # Fetch deposit id from record and resolve deposit record and pid.
         depid = PersistentIdentifier.get(DepositUUIDProvider.pid_type,
                                          pid.pid_value)

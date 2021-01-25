@@ -70,13 +70,13 @@ sys.path.append(
 sys.path.append(os.path.dirname(__file__))
 
 
-@pytest.yield_fixture(scope='session')
+@pytest.fixture(scope='session')
 def base_app():
     """Base uninitialized flask application fixture."""
     from b2share.factory import create_api
 
-    for k,v in os.environ.items():
-        print("ENV: {} --> {}".format(k,v))
+#   for k,v in os.environ.items():
+#       print("ENV: {} --> {}".format(k,v))
 
     instance_path = tempfile.mkdtemp()
     os.environ.update(
@@ -120,7 +120,7 @@ def base_app():
     shutil.rmtree(instance_path)
 
 
-@pytest.yield_fixture(scope='function')
+@pytest.fixture(scope='function')
 def clean_app(request, base_app):
     """Application with database and elasticsearch cleaned."""
     with base_app.app_context():
@@ -512,7 +512,7 @@ def test_records(app, request, test_records_data, test_users):
         return result
 
 
-@pytest.yield_fixture()
+@pytest.fixture()
 def tmp_location(app):
     """File system location."""
     with app.app_context():
@@ -531,7 +531,7 @@ def tmp_location(app):
     shutil.rmtree(tmppath)
 
 
-@pytest.yield_fixture
+@pytest.fixture
 def flask_http_responses(app):
     """Routes HTTP requests to the given flask application.
 
@@ -563,7 +563,7 @@ def flask_http_responses(app):
                     'https://' +
                     app.config.get('SERVER_NAME') +
                     (app.config.get('APPLICATION_ROOT') or '') +
-                    re.sub(r'<[^>]+>', r'\S+', rule.rule))
+                    re.sub(r'<[^>]+>', r'\\S+', rule.rule))
                 for method in rule.methods:
                     rsps.add_callback(method, url_regexp,
                                       callback=router_callback)
