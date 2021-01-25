@@ -39,22 +39,26 @@ def test_record_indexing(app, test_users, test_records, script_info,
                            login_user):
     """Test record indexing and reindexing."""
     creator = test_users['deposits_creator']
+    # Placeholder workaround to solve issues with ES not updating records fast enough
 
     with app.app_context():
         # flush the indices so that indexed records are searchable
-        current_search_client.indices.flush('*')
+        current_search_client.indices.flush(index='_all', params= {'force':'true'})
+        current_search_client.indices.refresh(index='_all')
     # records and deposits should be indexed
     subtest_record_search(app, creator, test_records, test_records, login_user)
 
     with app.app_context():
-        current_search_client.indices.flush('*')
+        current_search_client.indices.flush(index='_all', params= {'force':'true'})
+        current_search_client.indices.refresh(index='_all')
         # delete all elasticsearch indices and recreate them
         for deleted in current_search.delete(ignore=[404]):
             pass
         for created in current_search.create(None):
             pass
         # flush the indices so that indexed records are searchable
-        current_search_client.indices.flush('*')
+        current_search_client.indices.flush(index='_all', params= {'force':'true'})
+        current_search_client.indices.refresh(index='_all')
 
     # all records should have been deleted
     subtest_record_search(app, creator, [], [], login_user)
@@ -66,12 +70,13 @@ def test_record_indexing(app, test_users, test_records, script_info,
                             obj=script_info)
         assert 0 == res.exit_code
         # schedule a reindex task
-        res = runner.invoke(cli.reindex, ['--yes-i-know'], obj=script_info)
+        res = runner.invoke(cli.reindex, ['--yes-i-know', '-t', 'b2rec'], obj=script_info)
         assert 0 == res.exit_code
         # execute scheduled tasks synchronously
         process_bulk_queue.delay()
         # flush the indices so that indexed records are searchable
-        current_search_client.indices.flush('*')
+        current_search_client.indices.flush(index='_all', params= {'wait_if_ongoing':'false'})
+        current_search_client.indices.refresh(index='_all')
 
     # records and deposits should be indexed again
     subtest_record_search(app, creator, test_records, test_records, login_user)
@@ -87,7 +92,6 @@ def subtest_record_search(app, creator, test_records, test_deposits,
 
     headers = [('Content-Type', 'application/json'),
                ('Accept', 'application/json')]
-
     # search for published records
     with app.test_client() as client:
         record_search_res = client.get(
