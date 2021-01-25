@@ -44,6 +44,7 @@ from b2share.modules.deposit.api import Deposit as B2ShareDeposit
 from b2share.modules.schemas.helpers import load_root_schemas
 from b2share.modules.b2share_demo.helpers import resolve_community_id, resolve_block_schema_id
 from flask_security import url_for_security
+from flask.cli import ScriptInfo
 from invenio_db import db
 from invenio_files_rest.models import Location
 from invenio_search import current_search_client, current_search
@@ -84,6 +85,8 @@ def base_app():
     )
     app = create_api(
         TESTING=True,
+        DEBUG=True,
+        FLASK_ENV='development',
         SERVER_NAME='localhost:5000',
         JSONSCHEMAS_HOST='localhost:5000',
         DEBUG_TB_ENABLED=False,
@@ -102,7 +105,7 @@ def base_app():
         CELERY_CACHE_BACKEND="memory",
         CELERY_TASK_EAGER_PROPAGATES=True,
         SUPPORT_EMAIL='support@eudat.eu',
-        PREFERRED_URL_SCHEME='https',
+        PREFERRED_URL_SCHEME='http',
         FILES_REST_STORAGE_FACTORY='b2share.modules.files.storage.b2share_storage_factory',
         FILES_REST_STORAGE_CLASS_LIST={
             'B': 'B2SafePid',
@@ -154,6 +157,7 @@ def app(request, clean_app):
     """Application with database tables created."""
     with clean_app.app_context():
         ext = clean_app.extensions['invenio-db']
+        print("App created---DB initialized")
         db.metadata.create_all(db.session.connection())
         alembic_stamp('heads')
         db.session.commit()
@@ -214,6 +218,7 @@ def login_user(app):
 
     with app.test_request_context():
         login_url = url_for_security('login')
+        #login_url = 'https://localhost:5000/login/'
 
     def login(user_info, client):
         res = client.post(login_url, data={
