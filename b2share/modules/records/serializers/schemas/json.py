@@ -119,6 +119,8 @@ class DraftSchemaJSONV1(Schema):
             del data['metadata']['_oai']
         if '_internal' in data['metadata']:
             del data['metadata']['_internal']
+        if '_bucket' in data['metadata']:
+            del data['metadata']['_bucket']
         return data
 
 
