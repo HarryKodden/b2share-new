@@ -161,7 +161,7 @@ def alembic_upgrade_database_data(alembic, verbose):
                     # Create parent version PID
                     parent_pid = RecordUUIDProvider.create().pid
                     assert parent_pid
-                    version_master = PIDVersioning(child=parent_pid)
+                    version_master = PIDVersioning(parent=parent_pid)
                     version_master.insert_draft_child(child=rec_pid)
                 else:
                     # Retrieve previously created version PID
