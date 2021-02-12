@@ -265,12 +265,11 @@ def filenames(record):
     return [f.key for f in record.files]
 
 def retrieve_version_master(child_pid):
-    """Retrieve the PIDNodeVersioning from a child PID."""
+    """Retrieve the PIDVersioning from a child PID."""
     if type(child_pid).__name__ == "FetchedPID":
         # when getting a pid-like object from elasticsearch
         child_pid = child_pid.provider.get(child_pid.pid_value).pid
-#   parent_pid = PIDNodeVersioning(child=child_pid).parent
     parent_pid = PIDVersioning(child=child_pid).parent
     if not parent_pid:
         return None
-    return PIDNodeVersioning(parent=parent_pid)
+    return PIDVersioning(parent=parent_pid)
