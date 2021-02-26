@@ -43,6 +43,7 @@ invenio-i18n = ">=1.3.0a1"
 invenio-theme = "^1.3.4"
 responses = "^0.12.1"
 httplib2 = "^0.18.1"
+invenio-indexer = "1.2.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.1.2"

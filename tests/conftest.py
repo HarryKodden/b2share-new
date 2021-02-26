@@ -219,7 +219,6 @@ def login_user(app):
 
     with app.test_request_context():
         login_url = url_for_security('login')
-        #login_url = 'https://localhost:5000/login/'
 
     def login(user_info, client):
         res = client.post(login_url, data={
@@ -571,6 +570,8 @@ def flask_http_responses(app):
             yield
     yield router
 
+
+from flask.cli import ScriptInfo
 
 @pytest.fixture()
 def script_info(app):
