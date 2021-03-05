@@ -96,7 +96,7 @@ services:
         # Set default file location
         # b2share files location --default 'default-location' /opt/var/data
         # Collec all static content
-        b2share collect -v
+        FLASK_APP=/opt/app/b2share/wsgi_ui.py b2share collect -v
         # Create admin role to restrict access
         b2share roles create admin
         b2share access allow superuser-access role admin
