@@ -116,7 +116,7 @@ services:
       service: app
     image: b2share_app:latest
     restart: "always"
-    command: celery worker -A invenio_app.celery --loglevel=INFO
+    command: celery -A invenio_app.celery worker --loglevel=INFO
     links:
       - cache
       - es
