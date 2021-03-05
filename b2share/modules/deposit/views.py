@@ -27,8 +27,8 @@ from functools import partial
 from flask import abort, Blueprint, current_app, g, request
 from invenio_files_rest.errors import InvalidOperationError
 from invenio_pidstore.errors import PIDInvalidAction
-#from invenio_pidstore.resolver import Resolver
-from .resolver import Resolver
+from invenio_pidstore.resolver import Resolver
+#from .resolver import Resolver
 from invenio_db import db
 from invenio_records_rest.utils import obj_or_import_string
 from invenio_rest.views import create_api_errorhandler
@@ -162,8 +162,6 @@ def create_blueprint(endpoints):
         status=403, message='Invalid operation'
     ))
 
-    print("Create BluePrints...")
-
     for endpoint, options in (endpoints or {}).items():
         for rule in records_rest_url_rules(endpoint, **options):
             blueprint.add_url_rule(**rule)
@@ -191,7 +189,7 @@ class DepositResource(RecordResource):
     def put(self, *args, **kwargs):
         """PUT the deposit."""
         abort(405)
-
+        
     def _index_record(self, record):
         """Index the published record if the deposit is published."""
         if g.deposit_action == 'publish':
