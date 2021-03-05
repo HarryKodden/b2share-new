@@ -69,10 +69,13 @@ WORKDIR /opt/app
 
 ADD MANIFEST.in .
 ADD entry_points.txt .
+ADD requirements.txt .
 ADD README.rst .
 ADD setup.py .
 ADD setup.cfg .
 ADD b2share b2share
+
+RUN pip install -r requirements.txt
 
 # Prepare application frontend...
 
