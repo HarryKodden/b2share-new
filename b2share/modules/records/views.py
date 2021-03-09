@@ -56,10 +56,8 @@ from invenio_accounts.models import User
 from b2share.modules.records.providers import RecordUUIDProvider
 from b2share.modules.deposit.serializers import json_v1_response as \
     deposit_serializer
-from b2share.modules.deposit.api import Deposit, copy_data_from_previous
 from b2share.modules.deposit.errors import RecordNotFoundVersioningError, \
     IncorrectRecordVersioningError
-from b2share.modules.records.permissions import DeleteRecordPermission
 
 
 # duplicated from invenio-records-rest because we need
@@ -298,6 +296,8 @@ class B2ShareRecordsListResource(RecordsListResource):
         # import deposit dependencies here in order to avoid recursive imports
         from b2share.modules.deposit.links import deposit_links_factory
         from b2share.modules.records.api import B2ShareRecord
+        from b2share.modules.deposit.api import copy_data_from_previous
+
         if request.content_type not in self.loaders:
             abort(415)
         version_of = request.args.get('version_of')
