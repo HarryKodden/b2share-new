@@ -36,8 +36,6 @@ from .views import create_blueprint
 from .indexer import indexer_receiver
 from .cli import b2records
 
-from b2share.config import B2SHARE_RECORDS_REST_ENDPOINTS
-
 class B2ShareRecords(object):
     """B2Share Records extension."""
 
@@ -73,5 +71,6 @@ class B2ShareRecords(object):
 
     def init_config(self, app):
         """Initialize configuration."""
+        from b2share.config import B2SHARE_RECORDS_REST_ENDPOINTS
+
         app.config['B2SHARE_RECORDS_REST_ENDPOINTS'] = B2SHARE_RECORDS_REST_ENDPOINTS
-        pass
