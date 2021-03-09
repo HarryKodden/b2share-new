@@ -85,10 +85,11 @@ services:
       - /bin/sh
       - -c
       - |
+        tail -f /dev/null
         # Initialize db and index...
         b2share db init
         b2share index init
-        b2share alembic upgrade
+        b2share upgrade run -v
         # Bootstrap schemas
         b2share schemas init
         # load initial data

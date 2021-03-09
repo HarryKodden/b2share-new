@@ -44,7 +44,6 @@ from b2share.modules.access.permissions import (AuthenticatedNeed,
                                                 StrictDynamicPermission)
 from invenio_db import db
 
-from .api import generate_external_pids, PublicationStates
 from .loaders import deposit_patch_input_loader
 
 
@@ -268,11 +267,15 @@ class UpdateDepositPermission(DepositPermission):
     """Deposit update permission."""
 
     def _load_additional_permissions(self):
+
+        from b2share.modules.deposit.api import generate_external_pids, PublicationStates
+
         permissions = []
         new_deposit = None
         # Check submit/publish actions
         if (request.method == 'PATCH' and
             request.content_type == 'application/json-patch+json'):
+
             # FIXME: need some optimization on Invenio side. We are applying
             # the patch twice
             patch = deposit_patch_input_loader(self.deposit)
@@ -303,6 +306,7 @@ class UpdateDepositPermission(DepositPermission):
                     new_state=new_deposit['publication_state']
                 )
             )
+
             # Owners of a record can always "submit" it.
             if (self.deposit['publication_state'] == PublicationStates.draft.name and
                 new_deposit['publication_state'] == PublicationStates.submitted.name or
