@@ -118,6 +118,7 @@ SECURITY_EMAIL_SENDER = SUPPORT_EMAIL
 SECURITY_EMAIL_SUBJECT_REGISTER = _(
     "Welcome to B2SHARE!")
 #: Redis session storage URL.
+CACHE_REDIS_URL=os.environ.get("INVENIO_CACHE_REDIS_URL", 'redis://localhost:6379/0')
 ACCOUNTS_SESSION_REDIS_URL = os.environ.get("INVENIO_ACCOUNTS_SESSION_REDIS_URL", 'redis://localhost:6379/1')
 #: Enable session/user id request tracing. This feature will add X-Session-ID
 #: and X-User-ID headers to HTTP response. You MUST ensure that NGINX (or other
