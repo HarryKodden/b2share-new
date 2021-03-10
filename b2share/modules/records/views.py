@@ -361,7 +361,12 @@ class B2ShareRecordsListResource(RecordsListResource):
 class B2ShareRecordResource(RecordResource):
     """B2Share resource for records."""
 
-    def put(*args, **kwargs):
+    def __init__(self, resolver=None, **kwargs):
+        """Constructor."""
+        super(B2ShareRecordResource, self).__init__(**kwargs)
+        self.resolver = resolver
+
+    def put(self, **kwargs):
         """Disable PUT."""
         abort(405)
 
