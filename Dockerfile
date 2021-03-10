@@ -1,14 +1,16 @@
 FROM node:latest as build-deps
 
-MAINTAINER harry.kodden@surfsara.nl
+# Build License Selector
 
 WORKDIR /tmp
 
 RUN git clone https://github.com/EUDAT-B2SHARE/public-license-selector.git
 WORKDIR /tmp/public-license-selector
 RUN npm install --unsafe-perm
-RUN npm audit fix
+#RUN npm audit fix --force
 RUN npm run build
+
+# Build B2Share App
 
 WORKDIR /opt
 
@@ -28,7 +30,7 @@ RUN node_modules/webpack/bin/webpack.js -p
 
 FROM centos:7
 
-RUN rpm -iUvh http://dl.fedoraproject.org/pub/epel/7/x86_64/Packages/e/epel-release-7-12.noarch.rpm
+RUN rpm -iUvh http://dl.fedoraproject.org/pub/epel/7/x86_64/Packages/e/epel-release-7-13.noarch.rpm
 
 RUN yum -y update
 RUN yum -y groupinstall "Development tools"

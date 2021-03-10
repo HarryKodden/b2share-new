@@ -202,7 +202,7 @@ def create_url_rules(endpoint, list_route=None, item_route=None,
     from b2share.modules.deposit.api import Deposit
 
     list_view = B2ShareRecordsListResource.as_view(
-        RecordsListResource.view_name.format(endpoint),
+        B2ShareRecordsListResource.view_name.format(endpoint),
         resolver=resolver,
         minter_name=pid_minter,
         pid_type=pid_type,
@@ -287,6 +287,11 @@ def create_url_rules(endpoint, list_route=None, item_route=None,
 
 class B2ShareRecordsListResource(RecordsListResource):
     """B2Share resource for records listing and deposit creation."""
+
+    def __init__(self, resolver=None, **kwargs):
+        """Constructor."""
+        super(B2ShareRecordsListResource, self).__init__(**kwargs)
+        self.resolver = resolver
 
     def post(self, **kwargs):
         """Create a record.
